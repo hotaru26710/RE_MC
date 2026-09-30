@@ -1,0 +1,10 @@
+{
+  "death_return": {
+    "subtitle": "subtitles.re_mc.death_return",
+    "sounds": [
+      "re_mc:deathreturn/rezero_return_1",
+      "re_mc:deathreturn/rezero_return_2",
+      "re_mc:deathreturn/rezero_return_3"
+    ]
+  }
+}

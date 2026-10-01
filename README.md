@@ -30,7 +30,8 @@ When a player dies in Hardcore mode, the world is restored to the latest valid c
 - Low Spirit gradually desaturates and dims the world, stopping at near-monochrome rather than full black and white.
 - At lower Spirit levels, random exposed block faces can show corrupted block textures; some persist until the player tries to interact with that block.
 - Very low Spirit can create client-only hallucination zombies that approach the player without causing damage.
-- Adds Spirit Herb, Witch's Tea, and Gospel items.
+- Adds Spirit Herb, Witch's Tea, Gospel, and Unseen Hand items.
+- Unseen Hand pulls one hostile target with an invisible force, costs Spirit, and increases Witch's Scent.
 - Adds Witch's Scent, a persistent corruption stat that makes hallucinations more frequent.
 - Post-return aura effect that remains around the player for 5 minutes.
 

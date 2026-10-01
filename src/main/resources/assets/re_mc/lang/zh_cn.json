@@ -12,5 +12,10 @@
   "screen.re_mc.gospel.checkpoint": "存档点：%s @ %s",
   "screen.re_mc.gospel.deaths": "最近死亡",
   "screen.re_mc.gospel.no_deaths": "暂无记录。",
-  "subtitles.re_mc.death_return": "死亡回归"
+  "subtitles.re_mc.death_return": "死亡回归",
+  "item.re_mc.unseen_hand": "不可视之手",
+  "message.re_mc.unseen_hand.no_spirit": "精神值不足。",
+  "tooltip.re_mc.unseen_hand.cost": "消耗 8 点精神值，并增加魔女的余香。",
+  "tooltip.re_mc.unseen_hand": "用不可视之手拉扯并攻击视线内的目标。",
+  "message.re_mc.unseen_hand.no_target": "没有有效目标。"
 }

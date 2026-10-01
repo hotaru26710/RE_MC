@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.hotaru.re_mc.deathreturn.ReturnCommands;
 import org.hotaru.re_mc.deathreturn.item.GospelItem;
 import org.hotaru.re_mc.deathreturn.item.SpiritHerbItem;
+import org.hotaru.re_mc.deathreturn.item.UnseenHandItem;
 import org.hotaru.re_mc.deathreturn.item.WitchTeaItem;
 import org.hotaru.re_mc.deathreturn.ReturnConfig;
 import org.hotaru.re_mc.deathreturn.ReturnManager;
@@ -67,6 +68,7 @@ public class Re_mc {
     public static final RegistryObject<Item> SPIRIT_HERB = ITEMS.register("spirit_herb", () -> new SpiritHerbItem(new Item.Properties().stacksTo(16)));
     public static final RegistryObject<Item> WITCH_TEA = ITEMS.register("witch_tea", () -> new WitchTeaItem(new Item.Properties().stacksTo(8)));
     public static final RegistryObject<Item> GOSPEL = ITEMS.register("gospel", () -> new GospelItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> UNSEEN_HAND = ITEMS.register("unseen_hand", () -> new UnseenHandItem(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<CreativeModeTab> RETURN_TAB = CREATIVE_MODE_TABS.register("return_tab", () -> CreativeModeTab.builder()
             .withTabsBefore(CreativeModeTabs.COMBAT)
             .icon(() -> GOSPEL.get().getDefaultInstance())
@@ -74,6 +76,7 @@ public class Re_mc {
                 output.accept(SPIRIT_HERB.get());
                 output.accept(WITCH_TEA.get());
                 output.accept(GOSPEL.get());
+                output.accept(UNSEEN_HAND.get());
             }).build());
     public static final RegistryObject<CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder().withTabsBefore(CreativeModeTabs.COMBAT).icon(() -> EXAMPLE_ITEM.get().getDefaultInstance()).displayItems((parameters, output) -> {
         output.accept(EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event

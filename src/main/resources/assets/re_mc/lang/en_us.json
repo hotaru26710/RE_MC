@@ -12,5 +12,10 @@
   "screen.re_mc.gospel.checkpoint": "Checkpoint: %s @ %s",
   "screen.re_mc.gospel.deaths": "Recent deaths",
   "screen.re_mc.gospel.no_deaths": "No records.",
-  "subtitles.re_mc.death_return": "Death Return"
+  "subtitles.re_mc.death_return": "Death Return",
+  "item.re_mc.unseen_hand": "Unseen Hand",
+  "message.re_mc.unseen_hand.no_spirit": "Not enough Spirit.",
+  "tooltip.re_mc.unseen_hand.cost": "Costs 8 Spirit and increases Witch's Scent.",
+  "tooltip.re_mc.unseen_hand": "Pulls a visible target with an invisible hand.",
+  "message.re_mc.unseen_hand.no_target": "No valid target."
 }

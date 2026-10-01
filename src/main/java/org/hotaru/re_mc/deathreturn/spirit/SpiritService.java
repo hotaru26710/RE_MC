@@ -59,6 +59,22 @@ public final class SpiritService {
         );
     }
 
+    public static boolean hasSpirit(ServerPlayer player, float amount) {
+        PlayerMemory memory = ReturnMemoryService.getOrCreate(player.server, player.getUUID());
+        return memory.getSpirit() + 0.001F >= amount;
+    }
+    public static boolean spendSpirit(ServerPlayer player, float amount, float scentGain) {
+        PlayerMemory memory = ReturnMemoryService.getOrCreate(player.server, player.getUUID());
+        if (memory.getSpirit() + 0.001F < amount) {
+            return false;
+        }
+        memory.setSpirit(memory.getSpirit() - amount);
+        memory.setWitchScent(memory.getWitchScent() + scentGain);
+        ReturnMemoryService.save(player.server, player.getUUID(), memory);
+        sync(player, memory.getSpirit());
+        refreshDebuffs(player, memory.getSpirit());
+        return true;
+    }
     public static void addWitchScent(ServerPlayer player, float amount) {
         PlayerMemory memory = ReturnMemoryService.getOrCreate(player.server, player.getUUID());
         memory.setWitchScent(memory.getWitchScent() + amount);

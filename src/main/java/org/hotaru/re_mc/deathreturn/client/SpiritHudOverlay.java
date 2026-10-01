@@ -1,14 +1,19 @@
 package org.hotaru.re_mc.deathreturn.client;
 
+import com.mojang.blaze3d.shaders.AbstractUniform;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.PostChain;
+import net.minecraft.client.renderer.PostPass;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RenderGuiEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.hotaru.re_mc.Re_mc;
@@ -21,6 +26,7 @@ public final class SpiritHudOverlay {
     private static final ResourceLocation HEART_EMPTY = new ResourceLocation(Re_mc.MODID, "textures/gui/spirit_heart_empty.png");
     private static final ResourceLocation HEART_FULL = new ResourceLocation(Re_mc.MODID, "textures/gui/spirit_heart_full.png");
     private static final ResourceLocation HEART_HALF = new ResourceLocation(Re_mc.MODID, "textures/gui/spirit_heart_half.png");
+    private static final ResourceLocation DESATURATE_EFFECT = new ResourceLocation("minecraft", "shaders/post/desaturate.json");
     private static float spirit = 100.0F;
     private static boolean visible;
 
@@ -35,6 +41,7 @@ public final class SpiritHudOverlay {
     public static void clear() {
         spirit = 100.0F;
         visible = false;
+        shutdownSpiritDesaturation();
     }
 
     @SubscribeEvent
@@ -42,6 +49,13 @@ public final class SpiritHudOverlay {
         clear();
     }
 
+    @SubscribeEvent
+    public static void onRenderLevel(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) {
+            return;
+        }
+        updateSpiritDesaturation();
+    }
     @SubscribeEvent
     public static void onRenderGui(RenderGuiEvent.Post event) {
         Minecraft minecraft = Minecraft.getInstance();
@@ -57,6 +71,56 @@ public final class SpiritHudOverlay {
         render(event.getGuiGraphics(), x, y);
     }
 
+    private static void updateSpiritDesaturation() {
+        Minecraft minecraft = Minecraft.getInstance();
+        GameRenderer renderer = minecraft.gameRenderer;
+        PostChain current = renderer.currentEffect();
+        boolean ours = current != null && DESATURATE_EFFECT.toString().equals(current.getName());
+        Player player = minecraft.player;
+        boolean shouldApply = visible && player != null && !player.isCreative() && !player.isSpectator()
+                && !(minecraft.screen instanceof ReturnTransitionScreen) && spirit < 99.5F;
+
+        if (!shouldApply) {
+            if (ours) {
+                renderer.shutdownEffect();
+            }
+            return;
+        }
+        if (current != null && !ours) {
+            return;
+        }
+        if (!ours) {
+            renderer.loadEffect(DESATURATE_EFFECT);
+            current = renderer.currentEffect();
+        }
+        if (current == null) {
+            return;
+        }
+
+        float t = Math.max(0.0F, Math.min(1.0F, spirit / 100.0F));
+        float saturation = 0.15F + 0.85F * t;
+        float brightness = 0.72F + 0.28F * t;
+        for (PostPass pass : current.passes) {
+            if (!"color_convolve".equals(pass.getName())) {
+                continue;
+            }
+            AbstractUniform saturationUniform = pass.getEffect().safeGetUniform("Saturation");
+            saturationUniform.set(saturation);
+            AbstractUniform colorScale = pass.getEffect().safeGetUniform("ColorScale");
+            colorScale.set(brightness, brightness, brightness);
+            AbstractUniform offset = pass.getEffect().safeGetUniform("Offset");
+            offset.set(0.0F, 0.0F, 0.0F);
+            return;
+        }
+    }
+
+    private static void shutdownSpiritDesaturation() {
+        GameRenderer renderer = Minecraft.getInstance().gameRenderer;
+        PostChain current = renderer.currentEffect();
+        if (current != null && DESATURATE_EFFECT.toString().equals(current.getName())) {
+            renderer.shutdownEffect();
+        }
+    }
     private static void render(GuiGraphics graphics, int x, int y) {
         float time = Util.getMillis() / 1000.0F;
         boolean strain = spirit <= 75.0F;

@@ -38,6 +38,7 @@ class PlayerMemoryTest {
         memory.setLastCheckpointTime(12345L);
         memory.setLastCheckpointDimension("minecraft:overworld");
         memory.setSpirit(42.5F);
+        memory.setWitchScent(33.0F);
         memory.addDeath(new DeathRecord(99L, 1, "fall", "minecraft:overworld", 1.0D, 2.0D, 3.0D));
 
         PlayerMemory restored = PlayerMemory.fromTag(memory.toTag(), id);
@@ -46,6 +47,7 @@ class PlayerMemoryTest {
         assertEquals("Tester", restored.getProfileName());
         assertEquals(12345L, restored.getLastCheckpointTime());
         assertEquals(42.5F, restored.getSpirit());
+        assertEquals(33.0F, restored.getWitchScent());
         assertEquals(1, restored.getDeaths().size());
     }
 }

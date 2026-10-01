@@ -58,6 +58,7 @@ public final class SpiritGlitchController {
     private static final RandomSource RANDOM = RandomSource.create();
     private static final List<GlitchEntry> GLITCHES = new ArrayList<>();
     private static float spirit = 100.0F;
+    private static float witchScent;
     private static boolean visible;
     private static int tickCounter;
     private static int lastChunkX = Integer.MIN_VALUE;
@@ -66,8 +67,9 @@ public final class SpiritGlitchController {
     private SpiritGlitchController() {
     }
 
-    public static void setSpirit(float value, boolean enabled) {
+    public static void setSpirit(float value, float scent, boolean enabled) {
         spirit = Math.max(0.0F, Math.min(100.0F, value));
+        witchScent = Math.max(0.0F, Math.min(100.0F, scent));
         visible = enabled;
         if (!enabled) {
             GLITCHES.clear();
@@ -80,6 +82,7 @@ public final class SpiritGlitchController {
 
     public static void clear() {
         spirit = 100.0F;
+        witchScent = 0.0F;
         visible = false;
         GLITCHES.clear();
         lastChunkX = Integer.MIN_VALUE;
@@ -140,7 +143,7 @@ public final class SpiritGlitchController {
             GLITCHES.clear();
         }
 
-        float severity = Math.max(0.0F, Math.min(1.0F, (100.0F - spirit) / 100.0F));
+        float severity = Math.max(0.0F, Math.min(1.0F, (100.0F - spirit) / 100.0F + witchScent / 180.0F));
         int interval = Math.max(2, Math.round(15.0F - severity * 12.0F));
         if (tickCounter % interval != 0 || RANDOM.nextFloat() > 0.35F + severity * 0.65F) {
             return;

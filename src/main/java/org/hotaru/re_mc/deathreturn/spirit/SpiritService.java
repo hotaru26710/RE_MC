@@ -52,15 +52,32 @@ public final class SpiritService {
     }
 
     public static void sync(ServerPlayer player, float spirit) {
+        PlayerMemory memory = ReturnMemoryService.getOrCreate(player.server, player.getUUID());
         ReturnNetwork.CHANNEL.send(
                 PacketDistributor.PLAYER.with(() -> player),
-                new SpiritSyncPacket(spirit, ReturnConfig.SPIRIT_ENABLED.get() && ReturnConfig.SPIRIT_HUD_ENABLED.get())
+                new SpiritSyncPacket(spirit, memory.getWitchScent(), ReturnConfig.SPIRIT_ENABLED.get() && ReturnConfig.SPIRIT_HUD_ENABLED.get())
         );
     }
 
+    public static void addWitchScent(ServerPlayer player, float amount) {
+        PlayerMemory memory = ReturnMemoryService.getOrCreate(player.server, player.getUUID());
+        memory.setWitchScent(memory.getWitchScent() + amount);
+        ReturnMemoryService.save(player.server, player.getUUID(), memory);
+        sync(player, memory.getSpirit());
+    }
+
+    public static void restoreSpirit(ServerPlayer player, float amount, float scentGain) {
+        PlayerMemory memory = ReturnMemoryService.getOrCreate(player.server, player.getUUID());
+        memory.setSpirit(memory.getSpirit() + amount);
+        memory.setWitchScent(memory.getWitchScent() + scentGain);
+        ReturnMemoryService.save(player.server, player.getUUID(), memory);
+        sync(player, memory.getSpirit());
+        refreshDebuffs(player, memory.getSpirit());
+    }
     public static void applyReturnLoss(ServerPlayer player, int lossPercent) {
         PlayerMemory memory = ReturnMemoryService.getOrCreate(player.server, player.getUUID());
         memory.setSpirit(memory.getSpirit() - lossPercent);
+        memory.setWitchScent(memory.getWitchScent() + 8.0F + lossPercent * 0.5F);
         ReturnMemoryService.save(player.server, player.getUUID(), memory);
         sync(player, memory.getSpirit());
         refreshDebuffs(player, memory.getSpirit());

@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "minecraft:sweet_berries" },
+    { "item": "minecraft:fern" },
+    { "item": "minecraft:glow_berries" }
+  ],
+  "result": { "item": "re_mc:spirit_herb", "count": 2 }
+}

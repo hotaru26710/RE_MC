@@ -28,20 +28,23 @@ public final class SpiritHudOverlay {
     private static final ResourceLocation HEART_HALF = new ResourceLocation(Re_mc.MODID, "textures/gui/spirit_heart_half.png");
     private static final ResourceLocation DESATURATE_EFFECT = new ResourceLocation("minecraft", "shaders/post/desaturate.json");
     private static float spirit = 100.0F;
+    private static float witchScent;
     private static boolean visible;
 
     private SpiritHudOverlay() {
     }
 
-    public static void setSpirit(float value, boolean enabled) {
+    public static void setSpirit(float value, float scent, boolean enabled) {
         spirit = Math.max(0.0F, Math.min(100.0F, value));
+        witchScent = Math.max(0.0F, Math.min(100.0F, scent));
         visible = enabled;
-        SpiritGlitchController.setSpirit(spirit, enabled);
-        SpiritHallucinationController.setSpirit(spirit, enabled);
+        SpiritGlitchController.setSpirit(spirit, witchScent, enabled);
+        SpiritHallucinationController.setSpirit(spirit, witchScent, enabled);
     }
 
     public static void clear() {
         spirit = 100.0F;
+        witchScent = 0.0F;
         visible = false;
         SpiritGlitchController.clear();
         SpiritHallucinationController.clear();
@@ -133,6 +136,7 @@ public final class SpiritHudOverlay {
         int color = colorFor(spirit);
         int outline = danger && ((int) (time * 16.0F) & 1) == 0 ? 0xFFFF6B8E : 0xFF0B0913;
 
+        renderScent(graphics, x, y - 10);
         for (int i = 0; i < HEARTS; i++) {
             int heartX = x + i * HEART_STEP + jitter;
             int heartY = y;
@@ -148,6 +152,15 @@ public final class SpiritHudOverlay {
         }
     }
 
+    private static void renderScent(GuiGraphics graphics, int x, int y) {
+        int filled = Math.round(witchScent / 20.0F);
+        for (int i = 0; i < 5; i++) {
+            int px = x + i * 7 + 1;
+            int color = i < filled ? 0xFFB45CFF : 0xFF24182F;
+            graphics.fill(px, y, px + 5, y + 4, 0xFF0B0913);
+            graphics.fill(px + 1, y + 1, px + 4, y + 3, color);
+        }
+    }
     private static void drawHeart(GuiGraphics graphics, int x, int y, int mode, int color) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         graphics.blit(HEART_EMPTY, x, y, 0, 0, HEART_SIZE, HEART_SIZE, HEART_SIZE, HEART_SIZE);

@@ -34,14 +34,16 @@ public final class SpiritHallucinationController {
     private static final List<FakeZombie> ZOMBIES = new ArrayList<>();
     private static final float[] STEERING_ANGLES = {0.0F, 18.0F, -18.0F, 36.0F, -36.0F, 58.0F, -58.0F, 82.0F, -82.0F};
     private static float spirit = 100.0F;
+    private static float witchScent;
     private static boolean visible;
     private static int tickCounter;
 
     private SpiritHallucinationController() {
     }
 
-    public static void setSpirit(float value, boolean enabled) {
+    public static void setSpirit(float value, float scent, boolean enabled) {
         spirit = Math.max(0.0F, Math.min(100.0F, value));
+        witchScent = Math.max(0.0F, Math.min(100.0F, scent));
         visible = enabled;
         if (!enabled || spirit >= 85.0F) {
             ZOMBIES.clear();
@@ -50,6 +52,7 @@ public final class SpiritHallucinationController {
 
     public static void clear() {
         spirit = 100.0F;
+        witchScent = 0.0F;
         visible = false;
         ZOMBIES.clear();
     }
@@ -94,7 +97,7 @@ public final class SpiritHallucinationController {
         if (!visible || spirit >= 85.0F || player == null || level == null || minecraft.screen instanceof ReturnTransitionScreen) {
             return;
         }
-        float severity = Math.max(0.0F, Math.min(1.0F, (85.0F - spirit) / 85.0F));
+        float severity = Math.max(0.0F, Math.min(1.0F, (85.0F - spirit) / 85.0F + witchScent / 170.0F));
         int interval = Math.max(80, Math.round(280.0F - severity * 200.0F));
         if (tickCounter % interval != 0 || RANDOM.nextFloat() > 0.25F + severity * 0.7F || ZOMBIES.size() >= 2) {
             return;

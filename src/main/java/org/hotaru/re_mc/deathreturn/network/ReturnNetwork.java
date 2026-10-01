@@ -6,7 +6,7 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public final class ReturnNetwork {
-    private static final String VERSION = "1";
+    private static final String VERSION = "2";
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
             new ResourceLocation("re_mc", "death_return"),
             () -> VERSION,
@@ -33,6 +33,15 @@ public final class ReturnNetwork {
                 SpiritSyncPacket::encode,
                 SpiritSyncPacket::decode,
                 SpiritSyncPacket::handle,
+                java.util.Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+        );
+
+        CHANNEL.registerMessage(
+                2,
+                GospelDataPacket.class,
+                GospelDataPacket::encode,
+                GospelDataPacket::decode,
+                GospelDataPacket::handle,
                 java.util.Optional.of(NetworkDirection.PLAY_TO_CLIENT)
         );
     }

@@ -31,6 +31,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 import org.hotaru.re_mc.deathreturn.ReturnCommands;
+import org.hotaru.re_mc.deathreturn.item.GospelItem;
+import org.hotaru.re_mc.deathreturn.item.SpiritHerbItem;
+import org.hotaru.re_mc.deathreturn.item.WitchTeaItem;
 import org.hotaru.re_mc.deathreturn.ReturnConfig;
 import org.hotaru.re_mc.deathreturn.ReturnManager;
 import org.hotaru.re_mc.deathreturn.network.ReturnNetwork;
@@ -61,6 +64,17 @@ public class Re_mc {
 
     // Creates a creative tab with the id "re_mc:example_tab" for the example item, that is placed after the combat tab
     public static final RegistryObject<SoundEvent> DEATH_RETURN = SOUNDS.register("death_return", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(MODID, "death_return")));
+    public static final RegistryObject<Item> SPIRIT_HERB = ITEMS.register("spirit_herb", () -> new SpiritHerbItem(new Item.Properties().stacksTo(16)));
+    public static final RegistryObject<Item> WITCH_TEA = ITEMS.register("witch_tea", () -> new WitchTeaItem(new Item.Properties().stacksTo(8)));
+    public static final RegistryObject<Item> GOSPEL = ITEMS.register("gospel", () -> new GospelItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<CreativeModeTab> RETURN_TAB = CREATIVE_MODE_TABS.register("return_tab", () -> CreativeModeTab.builder()
+            .withTabsBefore(CreativeModeTabs.COMBAT)
+            .icon(() -> GOSPEL.get().getDefaultInstance())
+            .displayItems((parameters, output) -> {
+                output.accept(SPIRIT_HERB.get());
+                output.accept(WITCH_TEA.get());
+                output.accept(GOSPEL.get());
+            }).build());
     public static final RegistryObject<CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder().withTabsBefore(CreativeModeTabs.COMBAT).icon(() -> EXAMPLE_ITEM.get().getDefaultInstance()).displayItems((parameters, output) -> {
         output.accept(EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
     }).build());

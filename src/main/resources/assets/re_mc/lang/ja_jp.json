@@ -1,0 +1,16 @@
+{
+  "item.re_mc.spirit_herb": "精神草",
+  "item.re_mc.witch_tea": "魔女茶",
+  "item.re_mc.gospel": "福音書",
+  "tooltip.re_mc.spirit_herb": "精神値を 8 回復しますが、魔女の残り香が少し増えます。",
+  "tooltip.re_mc.witch_tea": "精神値を 25 回復しますが、魔女の残り香が大きく増えます。",
+  "tooltip.re_mc.gospel": "福音書の記録を開きます。使用には注意してください。",
+  "screen.re_mc.gospel.title": "福音書",
+  "screen.re_mc.gospel.spirit": "精神値: %s%%",
+  "screen.re_mc.gospel.scent": "魔女の残り香: %s%%",
+  "screen.re_mc.gospel.returns": "回帰回数: %s",
+  "screen.re_mc.gospel.checkpoint": "チェックポイント: %s @ %s",
+  "screen.re_mc.gospel.deaths": "最近の死亡",
+  "screen.re_mc.gospel.no_deaths": "記録なし。",
+  "subtitles.re_mc.death_return": "死亡回帰"
+}

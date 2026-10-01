@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " A ",
+    "BLC",
+    " E "
+  ],
+  "key": {
+    "A": { "item": "minecraft:amethyst_shard" },
+    "B": { "item": "minecraft:lapis_lazuli" },
+    "L": { "item": "minecraft:book" },
+    "C": { "item": "minecraft:ender_pearl" },
+    "E": { "item": "minecraft:ink_sac" }
+  },
+  "result": { "item": "re_mc:gospel" }
+}

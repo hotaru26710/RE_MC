@@ -1,3 +1,16 @@
 {
+  "item.re_mc.spirit_herb": "Spirit Herb",
+  "item.re_mc.witch_tea": "Witch's Tea",
+  "item.re_mc.gospel": "Gospel",
+  "tooltip.re_mc.spirit_herb": "Restores 8 Spirit and leaves a faint Witch's Scent.",
+  "tooltip.re_mc.witch_tea": "Restores 25 Spirit, but greatly increases Witch's Scent.",
+  "tooltip.re_mc.gospel": "Opens the Gospel record. Use with caution.",
+  "screen.re_mc.gospel.title": "Gospel",
+  "screen.re_mc.gospel.spirit": "Spirit: %s%%",
+  "screen.re_mc.gospel.scent": "Witch's Scent: %s%%",
+  "screen.re_mc.gospel.returns": "Returns: %s",
+  "screen.re_mc.gospel.checkpoint": "Checkpoint: %s @ %s",
+  "screen.re_mc.gospel.deaths": "Recent deaths",
+  "screen.re_mc.gospel.no_deaths": "No records.",
   "subtitles.re_mc.death_return": "Death Return"
 }

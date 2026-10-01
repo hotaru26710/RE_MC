@@ -1,3 +1,16 @@
 {
+  "item.re_mc.spirit_herb": "精神草",
+  "item.re_mc.witch_tea": "魔女茶",
+  "item.re_mc.gospel": "福音书",
+  "tooltip.re_mc.spirit_herb": "恢复 8 点精神值，但会留下少量魔女的余香。",
+  "tooltip.re_mc.witch_tea": "恢复 25 点精神值，但会大幅增加魔女的余香。",
+  "tooltip.re_mc.gospel": "打开福音书记录。谨慎使用。",
+  "screen.re_mc.gospel.title": "福音书",
+  "screen.re_mc.gospel.spirit": "精神值：%s%%",
+  "screen.re_mc.gospel.scent": "魔女的余香：%s%%",
+  "screen.re_mc.gospel.returns": "回归次数：%s",
+  "screen.re_mc.gospel.checkpoint": "存档点：%s @ %s",
+  "screen.re_mc.gospel.deaths": "最近死亡",
+  "screen.re_mc.gospel.no_deaths": "暂无记录。",
   "subtitles.re_mc.death_return": "死亡回归"
 }

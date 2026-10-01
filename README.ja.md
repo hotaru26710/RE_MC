@@ -67,6 +67,7 @@ RE_MC は、『Re:Zero から始める異世界生活』にインスパイアさ
 - `captureTimeoutSeconds`
 - `allowBossAndRaid`
 - `showTransition`
+- `debugForceHardcoreCommands`
 - `spiritEnabled`
 - `spiritRecoveryPerMinute`
 - `spiritHudEnabled`

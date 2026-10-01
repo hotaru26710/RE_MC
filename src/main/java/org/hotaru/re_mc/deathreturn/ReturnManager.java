@@ -91,7 +91,12 @@ public final class ReturnManager {
 
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
-        instance = new ReturnManager(event.getServer());
+        MinecraftServer server = event.getServer();
+        if (ReturnConfig.DEBUG_FORCE_HARDCORE_COMMANDS.get() && server.isHardcore()) {
+            server.getWorldData().getLevelSettings().allowCommands = true;
+            LOGGER.info("Death Return debug helper enabled commands for Hardcore world");
+        }
+        instance = new ReturnManager(server);
     }
 
     @SubscribeEvent

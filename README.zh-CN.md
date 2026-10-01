@@ -67,6 +67,7 @@ RE_MC 是一个 Minecraft Forge 1.20.1 模组，加入了仅限极限模式的 *
 - `captureTimeoutSeconds`
 - `allowBossAndRaid`
 - `showTransition`
+- `debugForceHardcoreCommands`
 - `spiritEnabled`
 - `spiritRecoveryPerMinute`
 - `spiritHudEnabled`

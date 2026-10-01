@@ -67,6 +67,7 @@ Important options include:
 - `captureTimeoutSeconds`
 - `allowBossAndRaid`
 - `showTransition`
+- `debugForceHardcoreCommands`
 - `spiritEnabled`
 - `spiritRecoveryPerMinute`
 - `spiritHudEnabled`

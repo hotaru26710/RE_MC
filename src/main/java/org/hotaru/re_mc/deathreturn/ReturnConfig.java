@@ -38,6 +38,9 @@ public final class ReturnConfig {
     public static final ForgeConfigSpec.BooleanValue SHOW_TRANSITION = BUILDER
             .comment("Show titles, sounds and the client-side black transition.")
             .define("showTransition", true);
+    public static final ForgeConfigSpec.BooleanValue DEBUG_FORCE_HARDCORE_COMMANDS = BUILDER
+            .comment("Debug helper: force allowCommands=true on Hardcore worlds.")
+            .define("debugForceHardcoreCommands", true);
     public static final ForgeConfigSpec.BooleanValue SPIRIT_ENABLED = BUILDER
             .comment("Enable the Spirit system.")
             .define("spiritEnabled", true);

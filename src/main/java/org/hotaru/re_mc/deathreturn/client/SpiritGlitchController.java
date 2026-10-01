@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.SectionPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
@@ -59,6 +60,8 @@ public final class SpiritGlitchController {
     private static float spirit = 100.0F;
     private static boolean visible;
     private static int tickCounter;
+    private static int lastChunkX = Integer.MIN_VALUE;
+    private static int lastChunkZ = Integer.MIN_VALUE;
 
     private SpiritGlitchController() {
     }
@@ -68,6 +71,8 @@ public final class SpiritGlitchController {
         visible = enabled;
         if (!enabled) {
             GLITCHES.clear();
+            lastChunkX = Integer.MIN_VALUE;
+            lastChunkZ = Integer.MIN_VALUE;
         } else if (spirit >= 100.0F) {
             GLITCHES.removeIf(entry -> !entry.persistent);
         }
@@ -77,6 +82,8 @@ public final class SpiritGlitchController {
         spirit = 100.0F;
         visible = false;
         GLITCHES.clear();
+        lastChunkX = Integer.MIN_VALUE;
+        lastChunkZ = Integer.MIN_VALUE;
     }
 
     @SubscribeEvent
@@ -125,6 +132,14 @@ public final class SpiritGlitchController {
             return;
         }
 
+        int chunkX = SectionPos.blockToSectionCoord(player.getBlockX());
+        int chunkZ = SectionPos.blockToSectionCoord(player.getBlockZ());
+        if (chunkX != lastChunkX || chunkZ != lastChunkZ) {
+            lastChunkX = chunkX;
+            lastChunkZ = chunkZ;
+            GLITCHES.clear();
+        }
+
         float severity = Math.max(0.0F, Math.min(1.0F, (100.0F - spirit) / 100.0F));
         int interval = Math.max(2, Math.round(15.0F - severity * 12.0F));
         if (tickCounter % interval != 0 || RANDOM.nextFloat() > 0.35F + severity * 0.65F) {
@@ -137,12 +152,15 @@ public final class SpiritGlitchController {
     }
 
     private static void spawnGlitch(ClientLevel level, Player player, float severity) {
-        int radius = 6 + Math.round(severity * 10.0F);
-        for (int attempt = 0; attempt < 18; attempt++) {
+        int playerChunkX = SectionPos.blockToSectionCoord(player.getBlockX());
+        int playerChunkZ = SectionPos.blockToSectionCoord(player.getBlockZ());
+        for (int attempt = 0; attempt < 24; attempt++) {
+            int chunkX = playerChunkX + RANDOM.nextInt(3) - 1;
+            int chunkZ = playerChunkZ + RANDOM.nextInt(3) - 1;
             BlockPos pos = BlockPos.containing(
-                    player.getX() + RANDOM.nextDouble() * radius * 2.0D - radius,
+                    chunkX * 16 + RANDOM.nextInt(16) + 0.5D,
                     player.getY() + RANDOM.nextDouble() * 8.0D - 4.0D,
-                    player.getZ() + RANDOM.nextDouble() * radius * 2.0D - radius
+                    chunkZ * 16 + RANDOM.nextInt(16) + 0.5D
             );
             if (!level.hasChunkAt(pos) || !isExposed(level, pos)) {
                 continue;

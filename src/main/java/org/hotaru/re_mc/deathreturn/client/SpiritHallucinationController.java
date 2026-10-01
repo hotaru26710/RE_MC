@@ -43,7 +43,7 @@ public final class SpiritHallucinationController {
     public static void setSpirit(float value, boolean enabled) {
         spirit = Math.max(0.0F, Math.min(100.0F, value));
         visible = enabled;
-        if (!enabled || spirit >= 65.0F) {
+        if (!enabled || spirit >= 85.0F) {
             ZOMBIES.clear();
         }
     }
@@ -91,11 +91,11 @@ public final class SpiritHallucinationController {
             moveLikeHostileMob(fake, player, level);
         }
 
-        if (!visible || spirit >= 65.0F || player == null || level == null || minecraft.screen instanceof ReturnTransitionScreen) {
+        if (!visible || spirit >= 85.0F || player == null || level == null || minecraft.screen instanceof ReturnTransitionScreen) {
             return;
         }
-        float severity = Math.max(0.0F, Math.min(1.0F, (65.0F - spirit) / 65.0F));
-        int interval = Math.max(120, Math.round(340.0F - severity * 240.0F));
+        float severity = Math.max(0.0F, Math.min(1.0F, (85.0F - spirit) / 85.0F));
+        int interval = Math.max(80, Math.round(280.0F - severity * 200.0F));
         if (tickCounter % interval != 0 || RANDOM.nextFloat() > 0.25F + severity * 0.7F || ZOMBIES.size() >= 2) {
             return;
         }
@@ -111,15 +111,15 @@ public final class SpiritHallucinationController {
         if (!level.hasChunkAt(column)) {
             return;
         }
-        int groundY = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column.getX(), column.getZ());
-        if (Math.abs(groundY - player.getY()) > 7.0D) {
+        double y = findSpawnY(level, column, player.getY());
+        if (Double.isNaN(y)) {
             return;
         }
         Zombie zombie = EntityType.ZOMBIE.create(level);
         if (zombie == null) {
             return;
         }
-        zombie.setPos(x, groundY, z);
+        zombie.setPos(x, y, z);
         zombie.setNoAi(true);
         zombie.setInvulnerable(true);
         zombie.setPersistenceRequired();
@@ -129,6 +129,26 @@ public final class SpiritHallucinationController {
         ZOMBIES.add(new FakeZombie(zombie, 220 + Math.round(severity * 260.0F), 0.035D + severity * 0.025D));
     }
 
+    private static double findSpawnY(ClientLevel level, BlockPos column, double playerY) {
+        int center = Mth.floor(playerY);
+        int minY = Math.max(level.getMinBuildHeight() + 1, center - 6);
+        int maxY = Math.min(level.getMaxBuildHeight() - 2, center + 5);
+        for (int y = maxY; y >= minY; y--) {
+            BlockPos feet = new BlockPos(column.getX(), y, column.getZ());
+            BlockPos head = feet.above();
+            BlockPos below = feet.below();
+            if (!level.getBlockState(feet).getCollisionShape(level, feet).isEmpty()
+                    || !level.getBlockState(head).getCollisionShape(level, head).isEmpty()) {
+                continue;
+            }
+            BlockState support = level.getBlockState(below);
+            if (support.getCollisionShape(level, below).isEmpty() && y > center - 2) {
+                continue;
+            }
+            return y;
+        }
+        return Double.NaN;
+    }
     private static void moveLikeHostileMob(FakeZombie fake, Player player, ClientLevel level) {
         Zombie zombie = fake.zombie;
         Vec3 current = zombie.position();

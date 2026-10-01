@@ -51,8 +51,9 @@ public final class SpiritHudOverlay {
         int width = event.getGuiGraphics().guiWidth();
         int height = event.getGuiGraphics().guiHeight();
         int totalWidth = MARK_WIDTH + MARK_GAP + SEGMENTS * SEGMENT_WIDTH + (SEGMENTS - 1) * SEGMENT_GAP;
-        int x = width / 2 - totalWidth / 2;
-        int y = height - 49 - (player.getArmorValue() > 0 ? 10 : 0);
+        int healthBarCenter = width / 2 - 91 + 40;
+        int x = healthBarCenter - totalWidth / 2;
+        int y = height - 61 - (player.getArmorValue() > 0 ? 10 : 0);
         render(event.getGuiGraphics(), x, y, totalWidth);
     }
 

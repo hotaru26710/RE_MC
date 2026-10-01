@@ -14,11 +14,9 @@ import org.hotaru.re_mc.Re_mc;
 @Mod.EventBusSubscriber(modid = Re_mc.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public final class SpiritHudOverlay {
     private static final int SEGMENTS = 10;
-    private static final int SEGMENT_WIDTH = 7;
-    private static final int SEGMENT_HEIGHT = 7;
-    private static final int SEGMENT_GAP = 2;
-    private static final int MARK_WIDTH = 16;
-    private static final int MARK_GAP = 6;
+    private static final int SEGMENT_WIDTH = 8;
+    private static final int SEGMENT_HEIGHT = 8;
+    private static final int SEGMENT_GAP = 0;
     private static float spirit = 100.0F;
     private static boolean visible;
 
@@ -50,10 +48,9 @@ public final class SpiritHudOverlay {
 
         int width = event.getGuiGraphics().guiWidth();
         int height = event.getGuiGraphics().guiHeight();
-        int totalWidth = MARK_WIDTH + MARK_GAP + SEGMENTS * SEGMENT_WIDTH + (SEGMENTS - 1) * SEGMENT_GAP;
-        int healthBarCenter = width / 2 - 91 + 40;
-        int x = healthBarCenter - totalWidth / 2;
-        int y = height - 61 - (player.getArmorValue() > 0 ? 10 : 0);
+        int totalWidth = SEGMENTS * SEGMENT_WIDTH + (SEGMENTS - 1) * SEGMENT_GAP;
+        int x = width / 2 - 91;
+        int y = height - 50 - (player.getArmorValue() > 0 ? 10 : 0);
         render(event.getGuiGraphics(), x, y, totalWidth);
     }
 
@@ -61,13 +58,13 @@ public final class SpiritHudOverlay {
         float time = Util.getMillis() / 1000.0F;
         boolean strain = spirit <= 75.0F;
         boolean danger = spirit < 30.0F;
-        int jitter = danger ? (int) Math.round(Math.sin(time * 24.0F) * 2.0D) : 0;
-        int trackX = x + MARK_WIDTH + MARK_GAP + jitter;
+        int jitter = danger ? (int) Math.round(Math.sin(time * 24.0F)) : 0;
+        int trackX = x + jitter;
         int trackY = y + jitter;
 
-        drawPixelMark(graphics, x + jitter, y - 1, danger, strain, time);
+        drawPixelMark(graphics, x + jitter, y - 10, danger, strain, time);
 
-        graphics.fill(trackX - 3, trackY - 3, trackX + trackWidth() + 3, trackY + SEGMENT_HEIGHT + 3, 0xE0100D18);
+        graphics.fill(trackX - 2, trackY - 2, trackX + trackWidth() + 2, trackY + SEGMENT_HEIGHT + 2, 0xE0100D18);
         graphics.fill(trackX - 1, trackY - 1, trackX + trackWidth() + 1, trackY + SEGMENT_HEIGHT + 1, danger && ((int) (time * 14.0F) & 1) == 0 ? 0xFFFF4C73 : 0xFF30294B);
         graphics.fill(trackX, trackY, trackX + trackWidth(), trackY + SEGMENT_HEIGHT, 0xFF171426);
 
@@ -103,19 +100,18 @@ public final class SpiritHudOverlay {
         int alpha = danger && ((int) (time * 12.0F) & 1) == 0 ? 0x80 : 0xFF;
         int c = alpha << 24 | (color & 0x00FFFFFF);
         int shadow = 0xAA000000;
-        graphics.fill(x + 6, y, x + 10, y + 4, c);
-        graphics.fill(x + 2, y + 4, x + 6, y + 8, c);
-        graphics.fill(x + 6, y + 4, x + 10, y + 8, 0xFFFFFFFF);
-        graphics.fill(x + 10, y + 4, x + 14, y + 8, c);
-        graphics.fill(x, y + 8, x + 4, y + 12, c);
-        graphics.fill(x + 4, y + 8, x + 8, y + 12, c);
-        graphics.fill(x + 8, y + 8, x + 12, y + 12, c);
-        graphics.fill(x + 12, y + 8, x + 16, y + 12, c);
-        graphics.fill(x + 4, y + 12, x + 8, y + 16, c);
-        graphics.fill(x + 8, y + 12, x + 12, y + 16, c);
-        graphics.fill(x + 6, y + 16, x + 10, y + 18, c);
+        graphics.fill(x + 3, y, x + 5, y + 2, c);
+        graphics.fill(x + 1, y + 2, x + 3, y + 4, c);
+        graphics.fill(x + 3, y + 2, x + 5, y + 4, 0xFFFFFFFF);
+        graphics.fill(x + 5, y + 2, x + 7, y + 4, c);
+        graphics.fill(x, y + 4, x + 2, y + 6, c);
+        graphics.fill(x + 2, y + 4, x + 4, y + 6, c);
+        graphics.fill(x + 4, y + 4, x + 6, y + 6, c);
+        graphics.fill(x + 6, y + 4, x + 8, y + 6, c);
+        graphics.fill(x + 2, y + 6, x + 4, y + 8, c);
+        graphics.fill(x + 4, y + 6, x + 6, y + 8, c);
         if (strain) {
-            graphics.fill(x + 1, y + 15, x + 15, y + 16, shadow);
+            graphics.fill(x + 1, y + 6, x + 7, y + 7, shadow);
         }
     }
 

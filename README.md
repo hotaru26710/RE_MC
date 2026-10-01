@@ -28,6 +28,7 @@ When a player dies in Hardcore mode, the world is restored to the latest valid c
 - Death Return reduces Spirit by 5%-30% depending on the death cause.
 - Spirit recovers by 1% per minute while online and applies tiered debuffs at low values.
 - Low Spirit gradually desaturates and dims the world, stopping at near-monochrome rather than full black and white.
+- At lower Spirit levels, random exposed block faces can briefly show corrupted block textures.
 - Post-return aura effect that remains around the player for 5 minutes.
 
 ## Commands

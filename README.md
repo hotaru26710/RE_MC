@@ -24,6 +24,9 @@ When a player dies in Hardcore mode, the world is restored to the latest valid c
 - Death log and return counter per player.
 - Random Death Return sound playback after successful return.
 - Client-side Return transition with black-out and purple Witch aura effects.
+- Spirit HUD above the health bar with animated ten-segment display.
+- Death Return reduces Spirit by 5%-30% depending on the death cause.
+- Spirit recovers by 1% per minute while online and applies tiered debuffs at low values.
 - Post-return aura effect that remains around the player for 5 minutes.
 
 ## Commands
@@ -58,6 +61,9 @@ Important options include:
 - `captureTimeoutSeconds`
 - `allowBossAndRaid`
 - `showTransition`
+- `spiritEnabled`
+- `spiritRecoveryPerMinute`
+- `spiritHudEnabled`
 
 ## Build
 

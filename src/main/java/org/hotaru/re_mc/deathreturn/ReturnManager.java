@@ -25,6 +25,8 @@ import org.hotaru.re_mc.deathreturn.memory.PlayerMemory;
 import org.hotaru.re_mc.deathreturn.memory.ReturnMemoryService;
 import org.hotaru.re_mc.deathreturn.network.ReturnNetwork;
 import org.hotaru.re_mc.deathreturn.network.ReturnTransitionPacket;
+import org.hotaru.re_mc.deathreturn.spirit.SpiritRules;
+import org.hotaru.re_mc.deathreturn.spirit.SpiritService;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
@@ -50,6 +52,7 @@ public final class ReturnManager {
     private ServerPlayer triggerPlayer;
     private final Map<UUID, Long> auraUntil = new HashMap<>();
     private long auraParticleTick;
+    private int pendingSpiritLoss = 10;
 
     private ReturnManager(MinecraftServer server) {
         this.server = server;
@@ -132,6 +135,13 @@ public final class ReturnManager {
     }
 
     @SubscribeEvent
+    public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        if (instance != null && event.getEntity() instanceof ServerPlayer player) {
+            SpiritService.sync(player);
+        }
+    }
+
+    @SubscribeEvent
     public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         if (instance != null && event.getEntity() instanceof ServerPlayer player) {
             instance.saveMemory(player);
@@ -140,6 +150,9 @@ public final class ReturnManager {
 
     private void tick() {
         tickAura();
+        if (isActive(server)) {
+            SpiritService.tickAll(server);
+        }
         if (!isActive(server) || state == ReturnState.RETURNING || state == ReturnState.RECOVERING) {
             return;
         }
@@ -219,6 +232,7 @@ public final class ReturnManager {
         }
         returnScheduled = true;
         triggerPlayer = player;
+        pendingSpiritLoss = SpiritRules.lossForDamageSource(source);
         state = ReturnState.RETURNING;
         String cause = source.getLocalizedDeathMessage(player).getString();
         ReturnMemoryService.appendDeath(server, player, cause, player.level().dimension(), player.position());
@@ -240,6 +254,7 @@ public final class ReturnManager {
                         checkpoints.stableManifest().worldGameTime(),
                         Level.OVERWORLD
                 );
+                SpiritService.applyReturnLoss(triggerPlayer, pendingSpiritLoss);
                 beginPostReturnReveal(triggerPlayer);
                 playReturnSound(triggerPlayer);
                 auraUntil.put(triggerPlayer.getUUID(), System.currentTimeMillis() + minutes(5));

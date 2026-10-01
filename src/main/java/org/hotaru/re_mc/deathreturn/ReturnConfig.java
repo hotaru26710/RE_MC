@@ -38,6 +38,15 @@ public final class ReturnConfig {
     public static final ForgeConfigSpec.BooleanValue SHOW_TRANSITION = BUILDER
             .comment("Show titles, sounds and the client-side black transition.")
             .define("showTransition", true);
+    public static final ForgeConfigSpec.BooleanValue SPIRIT_ENABLED = BUILDER
+            .comment("Enable the Spirit system.")
+            .define("spiritEnabled", true);
+    public static final ForgeConfigSpec.IntValue SPIRIT_RECOVERY_PER_MINUTE = BUILDER
+            .comment("Spirit recovered per minute while the player is online.")
+            .defineInRange("spiritRecoveryPerMinute", 1, 1, 100);
+    public static final ForgeConfigSpec.BooleanValue SPIRIT_HUD_ENABLED = BUILDER
+            .comment("Show the Spirit HUD above the player health bar.")
+            .define("spiritHudEnabled", true);
     public static final ForgeConfigSpec.IntValue MEMORY_HISTORY_LIMIT = BUILDER
             .comment("Maximum number of death records retained per player.")
             .defineInRange("memoryHistoryLimit", 100, 1, 1000);

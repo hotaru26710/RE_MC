@@ -26,5 +26,14 @@ public final class ReturnNetwork {
                 ReturnTransitionPacket::handle,
                 java.util.Optional.of(NetworkDirection.PLAY_TO_CLIENT)
         );
+
+        CHANNEL.registerMessage(
+                1,
+                SpiritSyncPacket.class,
+                SpiritSyncPacket::encode,
+                SpiritSyncPacket::decode,
+                SpiritSyncPacket::handle,
+                java.util.Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+        );
     }
 }

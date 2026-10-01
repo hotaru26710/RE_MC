@@ -20,6 +20,16 @@ class PlayerMemoryTest {
     }
 
     @Test
+    void missingSpiritDefaultsToFull() {
+        UUID id = UUID.randomUUID();
+        PlayerMemory memory = new PlayerMemory(id);
+        var tag = memory.toTag();
+        tag.remove("spirit");
+        PlayerMemory restored = PlayerMemory.fromTag(tag, id);
+        assertEquals(100.0F, restored.getSpirit());
+    }
+
+    @Test
     void nbtRoundTripPreservesState() {
         UUID id = UUID.randomUUID();
         PlayerMemory memory = new PlayerMemory(id);
@@ -27,6 +37,7 @@ class PlayerMemoryTest {
         memory.setTotalReturns(4);
         memory.setLastCheckpointTime(12345L);
         memory.setLastCheckpointDimension("minecraft:overworld");
+        memory.setSpirit(42.5F);
         memory.addDeath(new DeathRecord(99L, 1, "fall", "minecraft:overworld", 1.0D, 2.0D, 3.0D));
 
         PlayerMemory restored = PlayerMemory.fromTag(memory.toTag(), id);
@@ -34,6 +45,7 @@ class PlayerMemoryTest {
         assertEquals(4, restored.getTotalReturns());
         assertEquals("Tester", restored.getProfileName());
         assertEquals(12345L, restored.getLastCheckpointTime());
+        assertEquals(42.5F, restored.getSpirit());
         assertEquals(1, restored.getDeaths().size());
     }
 }

@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
@@ -21,6 +20,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -66,8 +66,10 @@ public final class SpiritGlitchController {
     public static void setSpirit(float value, boolean enabled) {
         spirit = Math.max(0.0F, Math.min(100.0F, value));
         visible = enabled;
-        if (!enabled || spirit >= 75.0F) {
+        if (!enabled) {
             GLITCHES.clear();
+        } else if (spirit >= 85.0F) {
+            GLITCHES.removeIf(entry -> !entry.persistent);
         }
     }
 
@@ -83,6 +85,23 @@ public final class SpiritGlitchController {
     }
 
     @SubscribeEvent
+    public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+        if (event.getLevel().isClientSide()) {
+            clearGlitchAt(event.getPos());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+        if (event.getLevel().isClientSide()) {
+            clearGlitchAt(event.getPos());
+        }
+    }
+
+    private static void clearGlitchAt(BlockPos pos) {
+        GLITCHES.removeIf(entry -> entry.pos.equals(pos));
+    }
+    @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) {
             return;
@@ -91,12 +110,12 @@ public final class SpiritGlitchController {
         Iterator<GlitchEntry> iterator = GLITCHES.iterator();
         while (iterator.hasNext()) {
             GlitchEntry entry = iterator.next();
-            if (--entry.ticks <= 0) {
+            if (!entry.persistent && --entry.ticks <= 0) {
                 iterator.remove();
             }
         }
 
-        if (!visible || spirit >= 75.0F) {
+        if (!visible || spirit >= 85.0F) {
             return;
         }
         Minecraft minecraft = Minecraft.getInstance();
@@ -106,19 +125,19 @@ public final class SpiritGlitchController {
             return;
         }
 
-        float severity = Math.max(0.0F, Math.min(1.0F, (75.0F - spirit) / 75.0F));
-        int interval = Math.max(4, Math.round(18.0F - severity * 12.0F));
-        if (tickCounter % interval != 0 || RANDOM.nextFloat() > 0.25F + severity * 0.75F) {
+        float severity = Math.max(0.0F, Math.min(1.0F, (85.0F - spirit) / 85.0F));
+        int interval = Math.max(2, Math.round(15.0F - severity * 12.0F));
+        if (tickCounter % interval != 0 || RANDOM.nextFloat() > 0.35F + severity * 0.65F) {
             return;
         }
-        int count = 1 + RANDOM.nextInt(1 + Math.round(severity * 3.0F));
-        for (int i = 0; i < count && GLITCHES.size() < 28; i++) {
+        int count = 1 + RANDOM.nextInt(2 + Math.round(severity * 5.0F));
+        for (int i = 0; i < count && GLITCHES.size() < 48; i++) {
             spawnGlitch(level, player, severity);
         }
     }
 
     private static void spawnGlitch(ClientLevel level, Player player, float severity) {
-        int radius = 5 + Math.round(severity * 7.0F);
+        int radius = 6 + Math.round(severity * 10.0F);
         for (int attempt = 0; attempt < 18; attempt++) {
             BlockPos pos = BlockPos.containing(
                     player.getX() + RANDOM.nextDouble() * radius * 2.0D - radius,
@@ -139,7 +158,8 @@ public final class SpiritGlitchController {
                 case 2 -> 0x5FF2FF;
                 default -> 0xFF6BB6;
             };
-            GLITCHES.add(new GlitchEntry(pos.immutable(), sprite, tint, 5 + RANDOM.nextInt(10)));
+            boolean persistent = RANDOM.nextFloat() < severity * 0.35F;
+            GLITCHES.add(new GlitchEntry(pos.immutable(), sprite, tint, persistent ? -1 : 5 + RANDOM.nextInt(12), persistent));
             return;
         }
     }
@@ -190,7 +210,7 @@ public final class SpiritGlitchController {
         if (sprite == null || level.getBlockState(pos).isAir()) {
             return;
         }
-        int alpha = 185 + RANDOM.nextInt(55);
+        int alpha = 215 + RANDOM.nextInt(41);
         for (Direction direction : Direction.values()) {
             if (level.getBlockState(pos.relative(direction)).isAir()) {
                 renderFace(consumer, poseStack, pos, direction, sprite, entry.tint, alpha);
@@ -267,13 +287,15 @@ public final class SpiritGlitchController {
         private final BlockPos pos;
         private final TextureAtlasSprite sprite;
         private final int tint;
+        private final boolean persistent;
         private int ticks;
 
-        private GlitchEntry(BlockPos pos, TextureAtlasSprite sprite, int tint, int ticks) {
+        private GlitchEntry(BlockPos pos, TextureAtlasSprite sprite, int tint, int ticks, boolean persistent) {
             this.pos = pos;
             this.sprite = sprite;
             this.tint = tint;
             this.ticks = ticks;
+            this.persistent = persistent;
         }
     }
 }

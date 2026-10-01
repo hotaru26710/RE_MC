@@ -1,8 +1,10 @@
 package org.hotaru.re_mc.deathreturn.client;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
@@ -16,6 +18,9 @@ public final class SpiritHudOverlay {
     private static final int HEARTS = 10;
     private static final int HEART_SIZE = 8;
     private static final int HEART_STEP = 8;
+    private static final ResourceLocation HEART_EMPTY = new ResourceLocation(Re_mc.MODID, "textures/gui/spirit_heart_empty.png");
+    private static final ResourceLocation HEART_FULL = new ResourceLocation(Re_mc.MODID, "textures/gui/spirit_heart_full.png");
+    private static final ResourceLocation HEART_HALF = new ResourceLocation(Re_mc.MODID, "textures/gui/spirit_heart_half.png");
     private static float spirit = 100.0F;
     private static boolean visible;
 
@@ -71,51 +76,23 @@ public final class SpiritHudOverlay {
 
             float remaining = Math.max(0.0F, Math.min(10.0F, spirit - i * 10.0F));
             int mode = remaining >= 10.0F ? 2 : remaining >= 5.0F ? 1 : 0;
-            drawHeart(graphics, heartX + 1, heartY + 1, mode == 0 ? 0xFF12101F : 0xFF08060C, 2);
-            drawHeart(graphics, heartX, heartY, mode == 0 ? 0xFF25223A : color, mode);
-            if (mode == 2 && (danger || (strain && i % 2 == 0))) {
-                drawHeart(graphics, heartX, heartY, 0x66FFFFFF, 2);
-            }
+            drawHeart(graphics, heartX, heartY, mode, color);
         }
     }
 
-    private static void drawHeart(GuiGraphics graphics, int x, int y, int color, int mode) {
-        if (mode == 0) {
-            drawHeartShape(graphics, x, y, color, false);
+    private static void drawHeart(GuiGraphics graphics, int x, int y, int mode, int color) {
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        graphics.blit(HEART_EMPTY, x, y, 0, 0, HEART_SIZE, HEART_SIZE, HEART_SIZE, HEART_SIZE);
+        if (mode <= 0) {
             return;
         }
-        if (mode == 2) {
-            drawHeartShape(graphics, x, y, color, false);
-            return;
-        }
-        drawHeartShape(graphics, x, y, color, true);
+        float red = ((color >> 16) & 0xFF) / 255.0F;
+        float green = ((color >> 8) & 0xFF) / 255.0F;
+        float blue = (color & 0xFF) / 255.0F;
+        RenderSystem.setShaderColor(red, green, blue, 1.0F);
+        graphics.blit(mode == 2 ? HEART_FULL : HEART_HALF, x, y, 0, 0, HEART_SIZE, HEART_SIZE, HEART_SIZE, HEART_SIZE);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
-
-    private static void drawHeartShape(GuiGraphics graphics, int x, int y, int color, boolean half) {
-        for (int gx = 0; gx < 4; gx++) {
-            for (int gy = 0; gy < 4; gy++) {
-                if (!isHeartPixel(gx, gy)) {
-                    continue;
-                }
-                if (half && gx >= 2) {
-                    continue;
-                }
-                int px = x + gx * 2;
-                int py = y + gy * 2;
-                graphics.fill(px, py, px + 2, py + 2, color);
-            }
-        }
-    }
-
-    private static boolean isHeartPixel(int x, int y) {
-        return switch (y) {
-            case 0 -> x == 1 || x == 2;
-            case 1, 2 -> x >= 0 && x <= 3;
-            case 3 -> x == 1 || x == 2;
-            default -> false;
-        };
-    }
-
     private static int colorFor(float value) {
         float t = Math.max(0.0F, Math.min(1.0F, value / 100.0F));
         int low = 0xFF668F;

@@ -1,5 +1,7 @@
 # RE_MC
 
+[English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md)
+
 RE_MC is a Minecraft Forge 1.20.1 mod that adds a Hardcore-only **Death Return** mechanic inspired by Re:Zero.
 
 When a player dies in Hardcore mode, the world is restored to the latest valid checkpoint, players return to their recorded state, and the triggering player receives a cinematic Return transition.
@@ -21,7 +23,8 @@ When a player dies in Hardcore mode, the world is restored to the latest valid c
 - Full world snapshot/rollback pipeline for the current implementation.
 - Death log and return counter per player.
 - Random Death Return sound playback after successful return.
-- Client-side black transition with purple Witch aura effects.
+- Client-side Return transition with black-out and purple Witch aura effects.
+- Post-return aura effect that remains around the player for 5 minutes.
 
 ## Commands
 

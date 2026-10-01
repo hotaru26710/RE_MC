@@ -68,7 +68,7 @@ public final class SpiritGlitchController {
         visible = enabled;
         if (!enabled) {
             GLITCHES.clear();
-        } else if (spirit >= 85.0F) {
+        } else if (spirit >= 100.0F) {
             GLITCHES.removeIf(entry -> !entry.persistent);
         }
     }
@@ -115,7 +115,7 @@ public final class SpiritGlitchController {
             }
         }
 
-        if (!visible || spirit >= 85.0F) {
+        if (!visible || spirit >= 100.0F) {
             return;
         }
         Minecraft minecraft = Minecraft.getInstance();
@@ -125,7 +125,7 @@ public final class SpiritGlitchController {
             return;
         }
 
-        float severity = Math.max(0.0F, Math.min(1.0F, (85.0F - spirit) / 85.0F));
+        float severity = Math.max(0.0F, Math.min(1.0F, (100.0F - spirit) / 100.0F));
         int interval = Math.max(2, Math.round(15.0F - severity * 12.0F));
         if (tickCounter % interval != 0 || RANDOM.nextFloat() > 0.35F + severity * 0.65F) {
             return;

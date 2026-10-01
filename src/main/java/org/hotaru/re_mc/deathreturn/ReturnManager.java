@@ -256,6 +256,7 @@ public final class ReturnManager {
                 );
                 SpiritService.applyReturnLoss(triggerPlayer, pendingSpiritLoss);
                 beginPostReturnReveal(triggerPlayer);
+                SpiritService.sync(triggerPlayer);
                 playReturnSound(triggerPlayer);
                 auraUntil.put(triggerPlayer.getUUID(), System.currentTimeMillis() + minutes(5));
             }

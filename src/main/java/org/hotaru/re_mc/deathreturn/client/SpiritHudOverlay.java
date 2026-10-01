@@ -37,12 +37,14 @@ public final class SpiritHudOverlay {
         spirit = Math.max(0.0F, Math.min(100.0F, value));
         visible = enabled;
         SpiritGlitchController.setSpirit(spirit, enabled);
+        SpiritHallucinationController.setSpirit(spirit, enabled);
     }
 
     public static void clear() {
         spirit = 100.0F;
         visible = false;
         SpiritGlitchController.clear();
+        SpiritHallucinationController.clear();
         shutdownSpiritDesaturation();
     }
 

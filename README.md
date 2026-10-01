@@ -29,6 +29,7 @@ When a player dies in Hardcore mode, the world is restored to the latest valid c
 - Spirit recovers by 1% per minute while online and applies tiered debuffs at low values.
 - Low Spirit gradually desaturates and dims the world, stopping at near-monochrome rather than full black and white.
 - At lower Spirit levels, random exposed block faces can show corrupted block textures; some persist until the player tries to interact with that block.
+- Very low Spirit can create client-only hallucination zombies that approach the player without causing damage.
 - Post-return aura effect that remains around the player for 5 minutes.
 
 ## Commands

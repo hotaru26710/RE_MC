@@ -76,8 +76,10 @@ public final class SpiritService {
         if (spirit <= 50.0F) {
             addOrRefresh(player, MobEffects.WEAKNESS, 0);
         }
-        if (spirit <= 25.0F) {
+        if (spirit < 30.0F) {
             addOrRefresh(player, MobEffects.MOVEMENT_SLOWDOWN, 0);
+        }
+        if (spirit <= 25.0F) {
             addOrRefresh(player, MobEffects.DARKNESS, 0);
         }
     }

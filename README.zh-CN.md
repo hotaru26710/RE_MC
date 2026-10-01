@@ -75,7 +75,7 @@ RE_MC 是一个 Minecraft Forge 1.20.1 模组，加入了仅限极限模式的 *
 输出：
 
 ```text
-build/libs/re_mc-1.0.0.jar
+build/libs/re_mc-1.1.0.jar
 ```
 
 ## 开发说明

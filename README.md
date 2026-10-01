@@ -75,7 +75,7 @@ Important options include:
 Output:
 
 ```text
-build/libs/re_mc-1.0.0.jar
+build/libs/re_mc-1.1.0.jar
 ```
 
 ## Development Notes

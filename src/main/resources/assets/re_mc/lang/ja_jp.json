@@ -17,5 +17,7 @@
   "message.re_mc.unseen_hand.no_spirit": "精神値が足りません。",
   "tooltip.re_mc.unseen_hand.cost": "精神値を 8 消費し、魔女の残り香が増えます。",
   "tooltip.re_mc.unseen_hand": "見えない手で視認できる対象を引き寄せて攻撃します。",
-  "message.re_mc.unseen_hand.no_target": "有効な対象がいません。"
+  "message.re_mc.unseen_hand.no_target": "有効な対象がいません。",
+  "screen.re_mc.subaru_mode": "スバルモード: %s",
+  "screen.re_mc.subaru_mode.tooltip": "死亡回帰を有効にした世界を作成します。チート許可は個別に選択できます。"
 }

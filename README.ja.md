@@ -2,7 +2,8 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md)
 
-RE_MC は、『Re:Zero から始める異世界生活』にインスパイアされた、ハードコア専用の **死亡回帰** 機能を追加する Minecraft Forge 1.20.1 用 MOD です。
+RE_MC は、『Re:Zero から始める異世界生活』にインスパイアされた **スバルモード** と死亡回帰機能を追加する Minecraft Forge 1.20.1 用 MOD です。
+スバルモードはワールド作成時に選択する独立モードで、バニラのハードコア設定は変更しません。チート許可は個別に選択できます。
 
 ハードコアモードでプレイヤーが死亡すると、世界は最新の有効なチェックポイントへ復元され、プレイヤーは記録された状態へ戻り、死亡したプレイヤーには復帰用の演出が表示されます。
 
@@ -15,7 +16,8 @@ RE_MC は、『Re:Zero から始める異世界生活』にインスパイアさ
 
 ## 機能
 
-- ハードコア専用の死亡回帰。
+- スバルモードで死亡回帰を有効化し、バニラのハードコア設定は変更しません。
+- ワールド作成時にスバルモードを選択し、チート許可を個別に設定できます。
 - ワールド起動後に初期チェックポイントを作成。
 - 15 分ごとに自動チェックポイント作成を試行。
 - 権限レベル付きの手動チェックポイントコマンド。
@@ -58,8 +60,6 @@ RE_MC は、『Re:Zero から始める異世界生活』にインスパイアさ
 主な設定項目:
 
 - `enabled`
-- `hardcoreOnly`
-- `debugAllowNonHardcore`
 - `autoIntervalMinutes`
 - `safeHealthPercent`
 - `damageFreeSeconds`
@@ -67,7 +67,6 @@ RE_MC は、『Re:Zero から始める異世界生活』にインスパイアさ
 - `captureTimeoutSeconds`
 - `allowBossAndRaid`
 - `showTransition`
-- `debugForceHardcoreCommands`
 - `spiritEnabled`
 - `spiritRecoveryPerMinute`
 - `spiritHudEnabled`

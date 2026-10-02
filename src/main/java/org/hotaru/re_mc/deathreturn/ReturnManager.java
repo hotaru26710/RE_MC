@@ -25,6 +25,8 @@ import org.hotaru.re_mc.deathreturn.memory.PlayerMemory;
 import org.hotaru.re_mc.deathreturn.memory.ReturnMemoryService;
 import org.hotaru.re_mc.deathreturn.network.ReturnNetwork;
 import org.hotaru.re_mc.deathreturn.network.ReturnTransitionPacket;
+import org.hotaru.re_mc.deathreturn.mode.SubaruModeManager;
+import org.hotaru.re_mc.deathreturn.mode.SubaruModePending;
 import org.hotaru.re_mc.deathreturn.spirit.SpiritRules;
 import org.hotaru.re_mc.deathreturn.spirit.SpiritService;
 import org.slf4j.Logger;
@@ -86,15 +88,17 @@ public final class ReturnManager {
         if (server == null) {
             return false;
         }
-        return server.isHardcore() || ReturnConfig.DEBUG_ALLOW_NON_HARDCORE.get();
+        return SubaruModeManager.isEnabled(server);
     }
 
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
         MinecraftServer server = event.getServer();
-        if (ReturnConfig.DEBUG_FORCE_HARDCORE_COMMANDS.get() && server.isHardcore()) {
-            server.getWorldData().getLevelSettings().allowCommands = true;
-            LOGGER.info("Death Return debug helper enabled commands for Hardcore world");
+        if (SubaruModePending.consumePending()) {
+            SubaruModeManager.setEnabled(server, true, server.getWorldData().getLevelSettings().allowCommands);
+            LOGGER.info("Subaru Mode enabled for newly created world");
+        } else {
+            SubaruModeManager.applySavedCommandPolicy(server);
         }
         instance = new ReturnManager(server);
     }
@@ -334,7 +338,7 @@ public final class ReturnManager {
 
     public String status() {
         if (!isActive(server)) {
-            return "Death Return: disabled (Hardcore-only mode).";
+            return "Death Return: disabled (Subaru Mode is not enabled).";
         }
         String checkpoint = checkpoints.hasStableCheckpoint()
                 ? "stable at game time " + checkpoints.stableManifest().worldGameTime()

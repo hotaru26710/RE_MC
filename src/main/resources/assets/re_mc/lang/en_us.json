@@ -17,5 +17,7 @@
   "message.re_mc.unseen_hand.no_spirit": "Not enough Spirit.",
   "tooltip.re_mc.unseen_hand.cost": "Costs 8 Spirit and increases Witch's Scent.",
   "tooltip.re_mc.unseen_hand": "Pulls a visible target with an invisible hand.",
-  "message.re_mc.unseen_hand.no_target": "No valid target."
+  "message.re_mc.unseen_hand.no_target": "No valid target.",
+  "screen.re_mc.subaru_mode": "Subaru Mode: %s",
+  "screen.re_mc.subaru_mode.tooltip": "Creates a world with Death Return enabled. Cheats can still be chosen separately."
 }

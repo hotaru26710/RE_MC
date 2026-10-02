@@ -11,6 +11,7 @@ import org.hotaru.re_mc.deathreturn.memory.PlayerMemory;
 import org.hotaru.re_mc.deathreturn.memory.ReturnMemoryService;
 import org.hotaru.re_mc.deathreturn.network.ReturnNetwork;
 import org.hotaru.re_mc.deathreturn.network.SpiritSyncPacket;
+import org.hotaru.re_mc.deathreturn.mode.SubaruModeManager;
 
 import java.util.List;
 
@@ -55,7 +56,7 @@ public final class SpiritService {
         PlayerMemory memory = ReturnMemoryService.getOrCreate(player.server, player.getUUID());
         ReturnNetwork.CHANNEL.send(
                 PacketDistributor.PLAYER.with(() -> player),
-                new SpiritSyncPacket(spirit, memory.getWitchScent(), ReturnConfig.SPIRIT_ENABLED.get() && ReturnConfig.SPIRIT_HUD_ENABLED.get())
+                new SpiritSyncPacket(spirit, memory.getWitchScent(), ReturnConfig.SPIRIT_ENABLED.get() && ReturnConfig.SPIRIT_HUD_ENABLED.get() && SubaruModeManager.isEnabled(player.server))
         );
     }
 

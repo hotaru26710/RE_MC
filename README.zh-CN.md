@@ -2,7 +2,8 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md)
 
-RE_MC 是一个 Minecraft Forge 1.20.1 模组，加入了仅限极限模式的 **死亡回归** 机制，灵感来自《Re:从零开始的异世界生活》。
+RE_MC 是一个 Minecraft Forge 1.20.1 模组，加入了 **486模式（Subaru Mode）** 与死亡回归机制，灵感来自《Re:从零开始的异世界生活》。
+486模式在创建世界时选择，是独立模式，不改动原版极限模式，并且可以单独选择是否允许作弊。
 
 当玩家在极限模式中死亡时，世界会恢复到最近一次有效存档点，玩家回到记录状态，触发死亡的玩家会看到回归过渡效果。
 
@@ -15,7 +16,8 @@ RE_MC 是一个 Minecraft Forge 1.20.1 模组，加入了仅限极限模式的 *
 
 ## 功能
 
-- 仅极限模式触发的死亡回归。
+- 486模式启用死亡回归，不改动原版极限模式。
+- 486模式在创建世界时选择，并可独立选择是否允许作弊。
 - 世界启动后创建初始存档点。
 - 每 15 分钟尝试自动创建存档点。
 - 支持权限等级控制的手动存档点命令。
@@ -58,8 +60,6 @@ RE_MC 是一个 Minecraft Forge 1.20.1 模组，加入了仅限极限模式的 *
 主要配置项：
 
 - `enabled`
-- `hardcoreOnly`
-- `debugAllowNonHardcore`
 - `autoIntervalMinutes`
 - `safeHealthPercent`
 - `damageFreeSeconds`
@@ -67,7 +67,6 @@ RE_MC 是一个 Minecraft Forge 1.20.1 模组，加入了仅限极限模式的 *
 - `captureTimeoutSeconds`
 - `allowBossAndRaid`
 - `showTransition`
-- `debugForceHardcoreCommands`
 - `spiritEnabled`
 - `spiritRecoveryPerMinute`
 - `spiritHudEnabled`

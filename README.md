@@ -2,7 +2,8 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md)
 
-RE_MC is a Minecraft Forge 1.20.1 mod that adds a Hardcore-only **Death Return** mechanic inspired by Re:Zero.
+RE_MC is a Minecraft Forge 1.20.1 mod that adds a **Subaru Mode** and Death Return mechanics inspired by Re:Zero.
+Subaru Mode is selected when creating a world. It behaves as a separate mode rather than modifying vanilla Hardcore, and cheats can be enabled separately.
 
 When a player dies in Hardcore mode, the world is restored to the latest valid checkpoint, players return to their recorded state, and the triggering player receives a cinematic Return transition.
 
@@ -15,7 +16,8 @@ When a player dies in Hardcore mode, the world is restored to the latest valid c
 
 ## Features
 
-- Hardcore-only Death Return trigger.
+- Subaru Mode enables Death Return without modifying vanilla Hardcore.
+- Subaru Mode is chosen when creating a world and can independently allow cheats.
 - Initial checkpoint created after world startup.
 - Automatic checkpoint attempts every 15 minutes.
 - Manual checkpoint commands with permission levels.
@@ -58,8 +60,6 @@ The server config is written to `serverconfig/re_mc-server.toml`.
 Important options include:
 
 - `enabled`
-- `hardcoreOnly`
-- `debugAllowNonHardcore`
 - `autoIntervalMinutes`
 - `safeHealthPercent`
 - `damageFreeSeconds`
@@ -67,7 +67,6 @@ Important options include:
 - `captureTimeoutSeconds`
 - `allowBossAndRaid`
 - `showTransition`
-- `debugForceHardcoreCommands`
 - `spiritEnabled`
 - `spiritRecoveryPerMinute`
 - `spiritHudEnabled`

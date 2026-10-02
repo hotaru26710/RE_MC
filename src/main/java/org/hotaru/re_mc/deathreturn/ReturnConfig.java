@@ -8,12 +8,6 @@ public final class ReturnConfig {
     public static final ForgeConfigSpec.BooleanValue ENABLED = BUILDER
             .comment("Enable the Death Return system.")
             .define("enabled", true);
-    public static final ForgeConfigSpec.BooleanValue HARDCORE_ONLY = BUILDER
-            .comment("Only activate in vanilla Hardcore worlds.")
-            .define("hardcoreOnly", true);
-    public static final ForgeConfigSpec.BooleanValue DEBUG_ALLOW_NON_HARDCORE = BUILDER
-            .comment("Debug only: allow Death Return outside Hardcore when hardcoreOnly is true.")
-            .define("debugAllowNonHardcore", false);
     public static final ForgeConfigSpec.IntValue AUTO_INTERVAL_MINUTES = BUILDER
             .comment("Minutes between automatic checkpoint attempts.")
             .defineInRange("autoIntervalMinutes", 15, 1, 1440);
@@ -38,9 +32,6 @@ public final class ReturnConfig {
     public static final ForgeConfigSpec.BooleanValue SHOW_TRANSITION = BUILDER
             .comment("Show titles, sounds and the client-side black transition.")
             .define("showTransition", true);
-    public static final ForgeConfigSpec.BooleanValue DEBUG_FORCE_HARDCORE_COMMANDS = BUILDER
-            .comment("Debug helper: force allowCommands=true on Hardcore worlds.")
-            .define("debugForceHardcoreCommands", true);
     public static final ForgeConfigSpec.BooleanValue SPIRIT_ENABLED = BUILDER
             .comment("Enable the Spirit system.")
             .define("spiritEnabled", true);

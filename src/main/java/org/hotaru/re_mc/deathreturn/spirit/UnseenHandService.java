@@ -80,10 +80,7 @@ public final class UnseenHandService {
             player.displayClientMessage(Component.translatable("message.re_mc.unseen_hand.no_target").withStyle(ChatFormatting.GRAY), true);
             return;
         }
-        if (!SpiritService.spendSpiritNoScent(player, ACTIVE_SPIRIT_COST)) {
-            player.displayClientMessage(Component.translatable("message.re_mc.unseen_hand.no_spirit").withStyle(ChatFormatting.RED), true);
-            return;
-        }
+        SpiritService.drainSpiritNoScent(player, ACTIVE_SPIRIT_COST);
         startAttack(player, targets, gameTime);
     }
 

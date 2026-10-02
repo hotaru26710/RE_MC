@@ -47,6 +47,8 @@ RE_MC は、『Re:Zero から始める異世界生活』にインスパイアさ
 /remc return checkpoint create
 /remc return checkpoint force
 /remc return recover
+/remc unseenhand debug [player]
+/remc spirit full [player]
 ```
 
 権限:

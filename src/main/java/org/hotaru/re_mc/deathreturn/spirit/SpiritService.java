@@ -37,7 +37,12 @@ public final class SpiritService {
             PlayerMemory memory = ReturnMemoryService.getOrCreate(server, player.getUUID());
             if (recover) {
                 boolean changed = false;
-                if (memory.getSpirit() < 100.0F) {
+                if (memory.isSpiritKeepFull()) {
+                    if (memory.getSpirit() < 100.0F) {
+                        memory.setSpirit(100.0F);
+                        changed = true;
+                    }
+                } else if (memory.getSpirit() < 100.0F) {
                     memory.setSpirit(memory.getSpirit() + ReturnConfig.SPIRIT_RECOVERY_PER_MINUTE.get());
                     changed = true;
                 }
@@ -72,14 +77,15 @@ public final class SpiritService {
 
     public static boolean hasSpirit(ServerPlayer player, float amount) {
         PlayerMemory memory = ReturnMemoryService.getOrCreate(player.server, player.getUUID());
-        return memory.getSpirit() + 0.001F >= amount;
+        return memory.isSpiritKeepFull() || memory.getSpirit() + 0.001F >= amount;
     }
+
     public static boolean spendSpirit(ServerPlayer player, float amount, float scentGain) {
         PlayerMemory memory = ReturnMemoryService.getOrCreate(player.server, player.getUUID());
-        if (memory.getSpirit() + 0.001F < amount) {
+        if (!memory.isSpiritKeepFull() && memory.getSpirit() + 0.001F < amount) {
             return false;
         }
-        memory.setSpirit(memory.getSpirit() - amount);
+        setSpiritAfterCost(memory, amount);
         memory.setWitchScent(memory.getWitchScent() + scentGain);
         ReturnMemoryService.save(player.server, player.getUUID(), memory);
         sync(player, memory.getSpirit());
@@ -95,7 +101,7 @@ public final class SpiritService {
 
     public static void restoreSpirit(ServerPlayer player, float amount, float scentGain) {
         PlayerMemory memory = ReturnMemoryService.getOrCreate(player.server, player.getUUID());
-        memory.setSpirit(memory.getSpirit() + amount);
+        restoreSpiritValue(memory, amount);
         memory.setWitchScent(memory.getWitchScent() + scentGain);
         ReturnMemoryService.save(player.server, player.getUUID(), memory);
         sync(player, memory.getSpirit());
@@ -104,7 +110,7 @@ public final class SpiritService {
 
     public static void restoreSpiritNoScent(ServerPlayer player, float amount) {
         PlayerMemory memory = ReturnMemoryService.getOrCreate(player.server, player.getUUID());
-        memory.setSpirit(memory.getSpirit() + amount);
+        restoreSpiritValue(memory, amount);
         ReturnMemoryService.save(player.server, player.getUUID(), memory);
         sync(player, memory.getSpirit());
         refreshDebuffs(player, memory.getSpirit());
@@ -112,10 +118,10 @@ public final class SpiritService {
 
     public static boolean spendSpiritNoScent(ServerPlayer player, float amount) {
         PlayerMemory memory = ReturnMemoryService.getOrCreate(player.server, player.getUUID());
-        if (memory.getSpirit() + 0.001F < amount) {
+        if (!memory.isSpiritKeepFull() && memory.getSpirit() + 0.001F < amount) {
             return false;
         }
-        memory.setSpirit(memory.getSpirit() - amount);
+        setSpiritAfterCost(memory, amount);
         ReturnMemoryService.save(player.server, player.getUUID(), memory);
         sync(player, memory.getSpirit());
         refreshDebuffs(player, memory.getSpirit());
@@ -124,7 +130,7 @@ public final class SpiritService {
 
     public static void drainSpiritNoScent(ServerPlayer player, float amount) {
         PlayerMemory memory = ReturnMemoryService.getOrCreate(player.server, player.getUUID());
-        memory.setSpirit(memory.getSpirit() - amount);
+        setSpiritAfterCost(memory, amount);
         ReturnMemoryService.save(player.server, player.getUUID(), memory);
         sync(player, memory.getSpirit());
         refreshDebuffs(player, memory.getSpirit());
@@ -132,11 +138,23 @@ public final class SpiritService {
 
     public static void applyReturnLoss(ServerPlayer player, int lossPercent) {
         PlayerMemory memory = ReturnMemoryService.getOrCreate(player.server, player.getUUID());
-        memory.setSpirit(memory.getSpirit() - lossPercent);
+        setSpiritAfterCost(memory, lossPercent);
         memory.setWitchScent(memory.getWitchScent() + 8.0F + lossPercent * 0.5F);
         ReturnMemoryService.save(player.server, player.getUUID(), memory);
         sync(player, memory.getSpirit());
         refreshDebuffs(player, memory.getSpirit());
+    }
+
+    public static boolean toggleKeepFull(ServerPlayer player) {
+        PlayerMemory memory = ReturnMemoryService.getOrCreate(player.server, player.getUUID());
+        memory.setSpiritKeepFull(!memory.isSpiritKeepFull());
+        if (memory.isSpiritKeepFull()) {
+            memory.setSpirit(100.0F);
+        }
+        ReturnMemoryService.save(player.server, player.getUUID(), memory);
+        sync(player, memory.getSpirit());
+        refreshDebuffs(player, memory.getSpirit());
+        return memory.isSpiritKeepFull();
     }
 
     public static void refreshDebuffs(ServerPlayer player, float spirit) {
@@ -155,6 +173,22 @@ public final class SpiritService {
         if (spirit <= 25.0F) {
             addOrRefresh(player, MobEffects.DARKNESS, 0);
         }
+    }
+
+    private static void setSpiritAfterCost(PlayerMemory memory, float amount) {
+        if (memory.isSpiritKeepFull()) {
+            memory.setSpirit(100.0F);
+            return;
+        }
+        memory.setSpirit(memory.getSpirit() - amount);
+    }
+
+    private static void restoreSpiritValue(PlayerMemory memory, float amount) {
+        if (memory.isSpiritKeepFull()) {
+            memory.setSpirit(100.0F);
+            return;
+        }
+        memory.setSpirit(memory.getSpirit() + amount);
     }
 
     private static void addOrRefresh(ServerPlayer player, MobEffect effect, int amplifier) {

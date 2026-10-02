@@ -13,6 +13,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.hotaru.re_mc.deathreturn.memory.DeathRecord;
 import org.hotaru.re_mc.deathreturn.memory.PlayerMemory;
 import org.hotaru.re_mc.deathreturn.memory.ReturnMemoryService;
+import org.hotaru.re_mc.deathreturn.spirit.SpiritService;
 import org.hotaru.re_mc.deathreturn.spirit.UnseenHandService;
 
 public final class ReturnCommands {
@@ -46,7 +47,13 @@ public final class ReturnCommands {
                                 .executes(context -> toggleUnseenHandDebug(context.getSource(), context.getSource().getPlayerOrException()))
                                 .then(Commands.argument("player", EntityArgument.player())
                                         .requires(source -> source.hasPermission(2))
-                                        .executes(context -> toggleUnseenHandDebug(context.getSource(), EntityArgument.getPlayer(context, "player"))))));
+                                        .executes(context -> toggleUnseenHandDebug(context.getSource(), EntityArgument.getPlayer(context, "player"))))))
+                .then(Commands.literal("spirit")
+                        .then(Commands.literal("full")
+                                .executes(context -> toggleSpiritFull(context.getSource(), context.getSource().getPlayerOrException()))
+                                .then(Commands.argument("player", EntityArgument.player())
+                                        .requires(source -> source.hasPermission(2))
+                                        .executes(context -> toggleSpiritFull(context.getSource(), EntityArgument.getPlayer(context, "player"))))));
         dispatcher.register(root);
     }
 
@@ -108,6 +115,12 @@ public final class ReturnCommands {
     private static int toggleUnseenHandDebug(CommandSourceStack source, ServerPlayer player) {
         boolean enabled = UnseenHandService.toggleDebugReady(player);
         source.sendSuccess(() -> Component.literal("Unseen Hand debug ready for " + player.getGameProfile().getName() + ": " + enabled), false);
+        return 1;
+    }
+
+    private static int toggleSpiritFull(CommandSourceStack source, ServerPlayer player) {
+        boolean enabled = SpiritService.toggleKeepFull(player);
+        source.sendSuccess(() -> Component.literal("Spirit keep-full for " + player.getGameProfile().getName() + ": " + enabled), false);
         return 1;
     }
 

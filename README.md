@@ -47,6 +47,8 @@ When a player dies in Subaru Mode, the world is restored to the latest valid che
 /remc return checkpoint create
 /remc return checkpoint force
 /remc return recover
+/remc unseenhand debug [player]
+/remc spirit full [player]
 ```
 
 Permission levels:

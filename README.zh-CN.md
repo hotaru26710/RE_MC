@@ -47,6 +47,8 @@ RE_MC 是一个 Minecraft Forge 1.20.1 模组，加入了 **486模式（Subaru M
 /remc return checkpoint create
 /remc return checkpoint force
 /remc return recover
+/remc unseenhand debug [player]
+/remc spirit full [player]
 ```
 
 权限：

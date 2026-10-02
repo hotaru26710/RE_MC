@@ -29,6 +29,7 @@ import org.hotaru.re_mc.deathreturn.mode.SubaruModeManager;
 import org.hotaru.re_mc.deathreturn.mode.SubaruModePending;
 import org.hotaru.re_mc.deathreturn.spirit.SpiritRules;
 import org.hotaru.re_mc.deathreturn.spirit.SpiritService;
+import org.hotaru.re_mc.deathreturn.spirit.UnseenHandService;
 import org.hotaru.re_mc.deathreturn.spirit.WitchScentService;
 import org.slf4j.Logger;
 
@@ -148,6 +149,7 @@ public final class ReturnManager {
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (instance != null && event.getEntity() instanceof ServerPlayer player) {
             SpiritService.sync(player);
+            UnseenHandService.syncCooldown(player);
         }
     }
 
@@ -162,6 +164,7 @@ public final class ReturnManager {
         tickAura();
         if (isActive(server)) {
             SpiritService.tickAll(server);
+            UnseenHandService.tickAll(server);
         }
         if (!isActive(server) || state == ReturnState.RETURNING || state == ReturnState.RECOVERING) {
             return;
@@ -266,6 +269,7 @@ public final class ReturnManager {
                         Level.OVERWORLD
                 );
                 SpiritService.applyReturnLoss(triggerPlayer, pendingSpiritLoss);
+                UnseenHandService.resetCooldown(triggerPlayer);
                 beginPostReturnReveal(triggerPlayer);
                 SpiritService.sync(triggerPlayer);
                 playReturnSound(triggerPlayer);
@@ -336,6 +340,10 @@ public final class ReturnManager {
         }
         state = ReturnState.IDLE;
         return "Death Return state reset to idle.";
+    }
+
+    public boolean isReturnInProgress() {
+        return returnScheduled || state == ReturnState.RETURNING || state == ReturnState.RECOVERING;
     }
 
     public String status() {

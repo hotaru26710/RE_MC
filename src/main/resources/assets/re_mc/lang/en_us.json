@@ -13,12 +13,16 @@
   "screen.re_mc.gospel.deaths": "Recent deaths",
   "screen.re_mc.gospel.no_deaths": "No records.",
   "subtitles.re_mc.death_return": "Death Return",
-  "item.re_mc.unseen_hand": "Unseen Hand",
   "message.re_mc.unseen_hand.no_spirit": "Not enough Spirit.",
-  "tooltip.re_mc.unseen_hand.cost": "Costs 8 Spirit and increases Witch's Scent.",
-  "tooltip.re_mc.unseen_hand": "Pulls a visible target with an invisible hand.",
   "message.re_mc.unseen_hand.no_target": "No valid target.",
   "screen.re_mc.subaru_mode": "Subaru Mode: %s",
   "screen.re_mc.subaru_mode.tooltip": "Creates a world with Death Return enabled. Cheats can still be chosen separately.",
-  "message.re_mc.witch_curse.trigger": "The Witch's attention turns toward you."
+  "message.re_mc.witch_curse.trigger": "The Witch's attention turns toward you.",
+  "key.categories.re_mc": "Re:MC",
+  "key.re_mc.unseen_hand": "Unseen Hand",
+  "hud.re_mc.unseen_hand.ready": "Unseen Hand ready",
+  "hud.re_mc.unseen_hand.cooldown": "Unseen Hand %s",
+  "message.re_mc.unseen_hand.cooldown": "Unseen Hand cooling down: %s",
+  "message.re_mc.unseen_hand.passive": "The Unseen Hand is awakened by fear.",
+  "message.re_mc.unseen_hand.sleep_reset": "Sleep reset the Unseen Hand."
 }

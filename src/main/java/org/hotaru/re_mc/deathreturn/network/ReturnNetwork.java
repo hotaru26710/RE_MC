@@ -6,7 +6,7 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public final class ReturnNetwork {
-    private static final String VERSION = "2";
+    private static final String VERSION = "3";
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
             new ResourceLocation("re_mc", "death_return"),
             () -> VERSION,
@@ -51,6 +51,33 @@ public final class ReturnNetwork {
                 WitchCursePacket::encode,
                 WitchCursePacket::decode,
                 WitchCursePacket::handle,
+                java.util.Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+        );
+
+        CHANNEL.registerMessage(
+                4,
+                UnseenHandActivatePacket.class,
+                UnseenHandActivatePacket::encode,
+                UnseenHandActivatePacket::decode,
+                UnseenHandActivatePacket::handle,
+                java.util.Optional.of(NetworkDirection.PLAY_TO_SERVER)
+        );
+
+        CHANNEL.registerMessage(
+                5,
+                UnseenHandVisualPacket.class,
+                UnseenHandVisualPacket::encode,
+                UnseenHandVisualPacket::decode,
+                UnseenHandVisualPacket::handle,
+                java.util.Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+        );
+
+        CHANNEL.registerMessage(
+                6,
+                UnseenHandCooldownPacket.class,
+                UnseenHandCooldownPacket::encode,
+                UnseenHandCooldownPacket::decode,
+                UnseenHandCooldownPacket::handle,
                 java.util.Optional.of(NetworkDirection.PLAY_TO_CLIENT)
         );
     }

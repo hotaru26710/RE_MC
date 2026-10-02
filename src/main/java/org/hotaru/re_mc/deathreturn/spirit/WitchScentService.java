@@ -130,12 +130,19 @@ public final class WitchScentService {
                 player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 120, 0, false, true, true));
                 player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 120, 0, false, true, true));
             }
-            if (sequence.ticks > 80 && (sequence.ticks - 80) % 10 == 0) {
-                player.invulnerableTime = 0;
-                player.hurt(player.damageSources().magic(), Math.max(2.0F, player.getMaxHealth() / 6.0F));
+            if (sequence.ticks > 80) {
+                int drainTick = sequence.ticks - 80;
+                float drainProgress = Math.min(1.0F, drainTick / 40.0F);
+                if (drainTick < 40) {
+                    float nextHealth = Math.max(0.01F, player.getMaxHealth() * (1.0F - drainProgress));
+                    player.setHealth(nextHealth);
+                } else if (player.isAlive() && player.getHealth() > 0.0F) {
+                    player.invulnerableTime = 0;
+                    player.hurt(player.damageSources().magic(), Float.MAX_VALUE);
+                }
             }
             if (!player.isAlive() || player.getHealth() <= 0.0F) {
-                ReturnNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new WitchCursePacket(0.0F, false));
+                clearCurseEffects(player);
                 iterator.remove();
             }
         }

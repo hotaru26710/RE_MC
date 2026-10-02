@@ -41,6 +41,12 @@ public final class ReturnConfig {
     public static final ForgeConfigSpec.BooleanValue SPIRIT_HUD_ENABLED = BUILDER
             .comment("Show the Spirit HUD above the player health bar.")
             .define("spiritHudEnabled", true);
+    public static final ForgeConfigSpec.IntValue WITCH_SCENT_DECAY_PER_MINUTE = BUILDER
+            .comment("Witch's Scent lost per minute while the player is online.")
+            .defineInRange("witchScentDecayPerMinute", 1, 1, 100);
+    public static final ForgeConfigSpec.IntValue SLEEP_SPIRIT_RESTORE = BUILDER
+            .comment("Spirit restored after sleeping in a bed.")
+            .defineInRange("sleepSpiritRestore", 20, 1, 100);
     public static final ForgeConfigSpec.IntValue MEMORY_HISTORY_LIMIT = BUILDER
             .comment("Maximum number of death records retained per player.")
             .defineInRange("memoryHistoryLimit", 100, 1, 1000);

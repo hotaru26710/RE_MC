@@ -23,6 +23,7 @@ public final class PlayerMemory {
     private static final String LAST_CHECKPOINT_DIMENSION_TAG = "lastCheckpointDimension";
     private static final String SPIRIT_TAG = "spirit";
     private static final String SCENT_TAG = "witchScent";
+    private static final String UNSEEN_HAND_COOLDOWN_TAG = "unseenHandCooldownEnd";
     private static final String DEATHS_TAG = "deaths";
 
     private final UUID playerId;
@@ -32,6 +33,7 @@ public final class PlayerMemory {
     private String lastCheckpointDimension = "";
     private float spirit = 100.0F;
     private float witchScent;
+    private long unseenHandCooldownEnd;
     private final List<DeathRecord> deaths = new ArrayList<>();
 
     public PlayerMemory(UUID playerId) {
@@ -89,6 +91,15 @@ public final class PlayerMemory {
     public void setWitchScent(float witchScent) {
         this.witchScent = Math.max(0.0F, Math.min(100.0F, witchScent));
     }
+
+    public long getUnseenHandCooldownEnd() {
+        return unseenHandCooldownEnd;
+    }
+
+    public void setUnseenHandCooldownEnd(long unseenHandCooldownEnd) {
+        this.unseenHandCooldownEnd = Math.max(0L, unseenHandCooldownEnd);
+    }
+
     public List<DeathRecord> getDeaths() {
         return Collections.unmodifiableList(deaths);
     }
@@ -120,6 +131,7 @@ public final class PlayerMemory {
         tag.putString(LAST_CHECKPOINT_DIMENSION_TAG, lastCheckpointDimension);
         tag.putFloat(SPIRIT_TAG, spirit);
         tag.putFloat(SCENT_TAG, witchScent);
+        tag.putLong(UNSEEN_HAND_COOLDOWN_TAG, unseenHandCooldownEnd);
 
         ListTag deathsTag = new ListTag();
         for (DeathRecord death : deaths) {
@@ -138,6 +150,7 @@ public final class PlayerMemory {
         memory.setLastCheckpointDimension(tag.getString(LAST_CHECKPOINT_DIMENSION_TAG));
         memory.setSpirit(tag.contains(SPIRIT_TAG) ? tag.getFloat(SPIRIT_TAG) : 100.0F);
         memory.setWitchScent(tag.contains(SCENT_TAG) ? tag.getFloat(SCENT_TAG) : 0.0F);
+        memory.setUnseenHandCooldownEnd(tag.contains(UNSEEN_HAND_COOLDOWN_TAG) ? tag.getLong(UNSEEN_HAND_COOLDOWN_TAG) : 0L);
 
         ListTag deathsTag = tag.getList(DEATHS_TAG, Tag.TAG_COMPOUND);
         for (int i = 0; i < deathsTag.size() && i < MAX_DEATH_RECORDS; i++) {

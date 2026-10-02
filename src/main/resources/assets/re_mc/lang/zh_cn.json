@@ -13,12 +13,16 @@
   "screen.re_mc.gospel.deaths": "最近死亡",
   "screen.re_mc.gospel.no_deaths": "暂无记录。",
   "subtitles.re_mc.death_return": "死亡回归",
-  "item.re_mc.unseen_hand": "不可视之手",
   "message.re_mc.unseen_hand.no_spirit": "精神值不足。",
-  "tooltip.re_mc.unseen_hand.cost": "消耗 8 点精神值，并增加魔女的余香。",
-  "tooltip.re_mc.unseen_hand": "用不可视之手拉扯并攻击视线内的目标。",
   "message.re_mc.unseen_hand.no_target": "没有有效目标。",
   "screen.re_mc.subaru_mode": "486模式：%s",
   "screen.re_mc.subaru_mode.tooltip": "以极限模式为范本创建世界并启用死亡回归，可自行选择是否允许作弊。",
-  "message.re_mc.witch_curse.trigger": "魔女的视线转向了你。"
+  "message.re_mc.witch_curse.trigger": "魔女的视线转向了你。",
+  "key.categories.re_mc": "Re:MC",
+  "key.re_mc.unseen_hand": "不可视之手",
+  "hud.re_mc.unseen_hand.ready": "不可视之手 就绪",
+  "hud.re_mc.unseen_hand.cooldown": "不可视之手 %s",
+  "message.re_mc.unseen_hand.cooldown": "不可视之手冷却中：%s",
+  "message.re_mc.unseen_hand.passive": "不可视之手被恐惧唤醒。",
+  "message.re_mc.unseen_hand.sleep_reset": "睡眠重置了不可视之手。"
 }

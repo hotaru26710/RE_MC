@@ -39,7 +39,6 @@ public final class SpiritHudOverlay {
         witchScent = Math.max(0.0F, Math.min(100.0F, scent));
         visible = enabled;
         SpiritGlitchController.setSpirit(spirit, witchScent, enabled);
-        SpiritHallucinationController.setSpirit(spirit, witchScent, enabled);
     }
 
     public static void clear() {
@@ -47,7 +46,6 @@ public final class SpiritHudOverlay {
         witchScent = 0.0F;
         visible = false;
         SpiritGlitchController.clear();
-        SpiritHallucinationController.clear();
         shutdownSpiritDesaturation();
     }
 

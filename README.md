@@ -5,14 +5,14 @@
 RE_MC is a Minecraft Forge 1.20.1 mod that adds a **Subaru Mode** and Death Return mechanics inspired by Re:Zero.
 Subaru Mode is selected when creating a world. It behaves as a separate mode rather than modifying vanilla Hardcore, and cheats can be enabled separately.
 
-When a player dies in Hardcore mode, the world is restored to the latest valid checkpoint, players return to their recorded state, and the triggering player receives a cinematic Return transition.
+When a player dies in Subaru Mode, the world is restored to the latest valid checkpoint, players return to their recorded state, and the triggering player receives a cinematic Return transition.
 
 ## Requirements
 
 - Minecraft 1.20.1
 - Forge 47.x
 - Java 17
-- Hardcore world mode enabled
+- A world created with Subaru Mode enabled
 
 ## Features
 
@@ -30,13 +30,14 @@ When a player dies in Hardcore mode, the world is restored to the latest valid c
 - Death Return reduces Spirit by 5%-30% depending on the death cause.
 - Spirit recovers by 1% per minute while online and applies tiered debuffs at low values.
 - Low Spirit gradually desaturates and dims the world, stopping at near-monochrome rather than full black and white.
-- At lower Spirit levels, random exposed block faces can show corrupted block textures; some persist until the player tries to interact with that block.
-- Very low Spirit can create client-only hallucination zombies that approach the player without causing damage.
-- Adds Spirit Herb, Witch's Tea, Gospel, and Unseen Hand items.
-- Unseen Hand pulls one hostile target with an invisible force, costs Spirit, and increases Witch's Scent.
-- Adds Witch's Scent, a persistent corruption stat that makes hallucinations more frequent.
-- Above 30% Witch's Scent, nearby mob spawning increases and forbidden chat phrases trigger a staged Witch curse death.
-- Post-return aura effect that remains around the player for 5 minutes.
+- At lower Spirit levels, random exposed block faces briefly show corrupted block textures; they now expire naturally and no longer require interaction to clear.
+- Adds Spirit Herb, Witch's Tea, and Gospel. The Unseen Hand is no longer an item.
+- Unseen Hand defaults to the V key. Active use locks every hostile within 10 blocks, creates one hand per enemy, continuously knocks them back and damages them, and costs 10% Spirit.
+- Passive trigger: below 3 hearts with at least 4 enemies within 10 blocks, it automatically consumes 20% Spirit and activates.
+- Active and passive share a 5-minute cooldown; Death Return or sleeping resets it.
+- Witch's Scent now decays over time and is not increased by Unseen Hand.
+- Above 30% Witch's Scent, nearby mob spawning increases and forbidden chat phrases trigger a staged Witch curse that smoothly drains the health bar to zero over about 2 seconds.
+- Sleeping restores Spirit. Post-return aura effect remains around the player for 5 minutes.
 
 ## Commands
 
@@ -71,6 +72,8 @@ Important options include:
 - `spiritEnabled`
 - `spiritRecoveryPerMinute`
 - `spiritHudEnabled`
+- `witchScentDecayPerMinute`
+- `sleepSpiritRestore`
 
 ## Build
 

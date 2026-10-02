@@ -86,7 +86,7 @@ RE_MC 是一个 Minecraft Forge 1.20.1 模组，加入了 **486模式（Subaru M
 输出：
 
 ```text
-build/libs/re_mc-1.1.0.jar
+build/libs/re_mc-1.2.0.jar
 ```
 
 ## 开发说明

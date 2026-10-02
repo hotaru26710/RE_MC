@@ -13,6 +13,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.hotaru.re_mc.deathreturn.memory.DeathRecord;
 import org.hotaru.re_mc.deathreturn.memory.PlayerMemory;
 import org.hotaru.re_mc.deathreturn.memory.ReturnMemoryService;
+import org.hotaru.re_mc.deathreturn.spirit.UnseenHandService;
 
 public final class ReturnCommands {
     private ReturnCommands() {
@@ -39,7 +40,13 @@ public final class ReturnCommands {
                                         .executes(context -> checkpointForce(context.getSource()))))
                         .then(Commands.literal("recover")
                                 .requires(source -> source.hasPermission(4))
-                                .executes(context -> recover(context.getSource()))));
+                                .executes(context -> recover(context.getSource()))))
+                .then(Commands.literal("unseenhand")
+                        .then(Commands.literal("debug")
+                                .executes(context -> toggleUnseenHandDebug(context.getSource(), context.getSource().getPlayerOrException()))
+                                .then(Commands.argument("player", EntityArgument.player())
+                                        .requires(source -> source.hasPermission(2))
+                                        .executes(context -> toggleUnseenHandDebug(context.getSource(), EntityArgument.getPlayer(context, "player"))))));
         dispatcher.register(root);
     }
 
@@ -95,6 +102,12 @@ public final class ReturnCommands {
         }
         String result = manager.manualForce(source.getPlayerOrException());
         source.sendSuccess(() -> Component.literal(result), false);
+        return 1;
+    }
+
+    private static int toggleUnseenHandDebug(CommandSourceStack source, ServerPlayer player) {
+        boolean enabled = UnseenHandService.toggleDebugReady(player);
+        source.sendSuccess(() -> Component.literal("Unseen Hand debug ready for " + player.getGameProfile().getName() + ": " + enabled), false);
         return 1;
     }
 

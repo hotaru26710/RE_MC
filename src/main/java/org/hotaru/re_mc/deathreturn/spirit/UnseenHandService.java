@@ -105,8 +105,10 @@ public final class UnseenHandService {
 
     private static void startAttack(ServerPlayer player, List<LivingEntity> targets, long gameTime) {
         PlayerMemory memory = ReturnMemoryService.getOrCreate(player.server, player.getUUID());
-        memory.setUnseenHandCooldownEnd(gameTime + COOLDOWN_TICKS);
-        ReturnMemoryService.save(player.server, player.getUUID(), memory);
+        if (!memory.isUnseenHandDebugReady()) {
+            memory.setUnseenHandCooldownEnd(gameTime + COOLDOWN_TICKS);
+            ReturnMemoryService.save(player.server, player.getUUID(), memory);
+        }
         syncCooldown(player);
 
         List<Integer> targetIds = targets.stream().map(Entity::getId).toList();
@@ -190,7 +192,18 @@ public final class UnseenHandService {
 
     private static int remainingCooldownTicks(ServerPlayer player, long gameTime) {
         PlayerMemory memory = ReturnMemoryService.getOrCreate(player.server, player.getUUID());
+        if (memory.isUnseenHandDebugReady()) {
+            return 0;
+        }
         return (int) Math.max(0L, Math.min(Integer.MAX_VALUE, memory.getUnseenHandCooldownEnd() - gameTime));
+    }
+
+    public static boolean toggleDebugReady(ServerPlayer player) {
+        PlayerMemory memory = ReturnMemoryService.getOrCreate(player.server, player.getUUID());
+        memory.setUnseenHandDebugReady(!memory.isUnseenHandDebugReady());
+        ReturnMemoryService.save(player.server, player.getUUID(), memory);
+        syncCooldown(player);
+        return memory.isUnseenHandDebugReady();
     }
 
     public static void syncCooldown(ServerPlayer player) {

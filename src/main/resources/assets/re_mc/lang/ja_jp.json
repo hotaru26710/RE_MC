@@ -19,5 +19,6 @@
   "tooltip.re_mc.unseen_hand": "見えない手で視認できる対象を引き寄せて攻撃します。",
   "message.re_mc.unseen_hand.no_target": "有効な対象がいません。",
   "screen.re_mc.subaru_mode": "スバルモード: %s",
-  "screen.re_mc.subaru_mode.tooltip": "死亡回帰を有効にした世界を作成します。チート許可は個別に選択できます。"
+  "screen.re_mc.subaru_mode.tooltip": "死亡回帰を有効にした世界を作成します。チート許可は個別に選択できます。",
+  "message.re_mc.witch_curse.trigger": "魔女の意識があなたへ向いた。"
 }

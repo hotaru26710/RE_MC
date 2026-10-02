@@ -35,6 +35,7 @@ When a player dies in Hardcore mode, the world is restored to the latest valid c
 - Adds Spirit Herb, Witch's Tea, Gospel, and Unseen Hand items.
 - Unseen Hand pulls one hostile target with an invisible force, costs Spirit, and increases Witch's Scent.
 - Adds Witch's Scent, a persistent corruption stat that makes hallucinations more frequent.
+- Above 30% Witch's Scent, nearby mob spawning increases and forbidden chat phrases trigger a staged Witch curse death.
 - Post-return aura effect that remains around the player for 5 minutes.
 
 ## Commands

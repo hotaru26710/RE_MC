@@ -44,5 +44,14 @@ public final class ReturnNetwork {
                 GospelDataPacket::handle,
                 java.util.Optional.of(NetworkDirection.PLAY_TO_CLIENT)
         );
+
+        CHANNEL.registerMessage(
+                3,
+                WitchCursePacket.class,
+                WitchCursePacket::encode,
+                WitchCursePacket::decode,
+                WitchCursePacket::handle,
+                java.util.Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+        );
     }
 }

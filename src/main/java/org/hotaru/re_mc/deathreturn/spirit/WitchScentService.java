@@ -85,12 +85,28 @@ public final class WitchScentService {
         }
     }
 
+    public static void cancelCurse(ServerPlayer player) {
+        CURSES.remove(player.getUUID());
+        clearCurseEffects(player);
+    }
+
+    private static void clearCurseEffects(ServerPlayer player) {
+        player.removeEffect(MobEffects.DARKNESS);
+        player.removeEffect(MobEffects.BLINDNESS);
+        ReturnNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new WitchCursePacket(0.0F, false));
+    }
+
     private static void processCurses(MinecraftServer server) {
         Iterator<Map.Entry<UUID, CurseSequence>> iterator = CURSES.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<UUID, CurseSequence> entry = iterator.next();
             ServerPlayer player = server.getPlayerList().getPlayer(entry.getKey());
-            if (player == null || !player.isAlive()) {
+            if (player == null) {
+                iterator.remove();
+                continue;
+            }
+            if (!player.isAlive()) {
+                clearCurseEffects(player);
                 iterator.remove();
                 continue;
             }

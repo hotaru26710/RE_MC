@@ -29,6 +29,7 @@ import org.hotaru.re_mc.deathreturn.mode.SubaruModeManager;
 import org.hotaru.re_mc.deathreturn.mode.SubaruModePending;
 import org.hotaru.re_mc.deathreturn.spirit.SpiritRules;
 import org.hotaru.re_mc.deathreturn.spirit.SpiritService;
+import org.hotaru.re_mc.deathreturn.spirit.WitchScentService;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
@@ -239,6 +240,7 @@ public final class ReturnManager {
         if (state == ReturnState.CANDIDATE_READY) {
             discardCandidate();
         }
+        WitchScentService.cancelCurse(player);
         returnScheduled = true;
         triggerPlayer = player;
         pendingSpiritLoss = SpiritRules.lossForDamageSource(source);

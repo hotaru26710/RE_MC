@@ -12,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -152,15 +153,21 @@ public final class UnseenHandService {
     }
 
     private static void applyPunch(ServerPlayer caster, LivingEntity target) {
-        Vec3 push = target.position().subtract(caster.position());
-        if (push.lengthSqr() < 1.0E-4D) {
-            push = caster.getLookAngle();
+        if (!isBoss(target)) {
+            Vec3 push = target.position().subtract(caster.position());
+            if (push.lengthSqr() < 1.0E-4D) {
+                push = caster.getLookAngle();
+            }
+            push = push.normalize().scale(KNOCKBACK_IV_STRENGTH).add(0.0D, 0.62D, 0.0D);
+            target.setDeltaMovement(target.getDeltaMovement().add(push));
+            target.hurtMarked = true;
         }
-        push = push.normalize().scale(KNOCKBACK_IV_STRENGTH).add(0.0D, 0.62D, 0.0D);
-        target.setDeltaMovement(target.getDeltaMovement().add(push));
-        target.hurtMarked = true;
         target.invulnerableTime = 0;
         target.hurt(caster.damageSources().playerAttack(caster), ATTACK_DAMAGE);
+    }
+
+    private static boolean isBoss(LivingEntity target) {
+        return target.getType().is(Tags.EntityTypes.BOSSES);
     }
 
     private static void renderPunchParticles(ServerLevel level, ServerPlayer caster, LivingEntity target) {

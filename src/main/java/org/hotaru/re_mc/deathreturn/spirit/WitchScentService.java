@@ -2,6 +2,7 @@ package org.hotaru.re_mc.deathreturn.spirit;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -12,10 +13,14 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.level.LightLayer;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.level.NaturalSpawner;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -178,27 +183,37 @@ public final class WitchScentService {
                 player.getY() + level.random.nextInt(9) - 4,
                 player.getZ() + Math.sin(angle) * distance
         );
-        if (!level.hasChunkAt(pos) || level.getBrightness(LightLayer.BLOCK, pos) > 7) {
+        if (!level.hasChunkAt(pos)) {
             return false;
         }
-        BlockState feet = level.getBlockState(pos);
-        BlockState head = level.getBlockState(pos.above());
-        BlockState below = level.getBlockState(pos.below());
-        if (!feet.getCollisionShape(level, pos).isEmpty() || !head.getCollisionShape(level, pos.above()).isEmpty() || below.getCollisionShape(level, pos.below()).isEmpty()) {
+        Holder<Biome> biome = level.getBiome(pos);
+        MobSpawnSettings.SpawnerData spawnData = biome.value()
+                .getMobSettings()
+                .getMobs(MobCategory.MONSTER)
+                .getRandom(level.random)
+                .orElse(null);
+        if (spawnData == null || !spawnData.type.canSummon()) {
             return false;
         }
-        EntityType<? extends Mob> type = switch (level.random.nextInt(4)) {
-            case 0 -> EntityType.ZOMBIE;
-            case 1 -> EntityType.SKELETON;
-            case 2 -> EntityType.SPIDER;
-            default -> EntityType.CREEPER;
-        };
-        Mob mob = type.create(level);
-        if (mob == null) {
+        EntityType<?> type = spawnData.type;
+        SpawnPlacements.Type placement = SpawnPlacements.getPlacementType(type);
+        if (!NaturalSpawner.isSpawnPositionOk(placement, level, pos, type)) {
+            return false;
+        }
+        if (!SpawnPlacements.checkSpawnRules(type, level, MobSpawnType.NATURAL, pos, level.random)) {
+            return false;
+        }
+        if (!level.noCollision(type.getAABB(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D))) {
+            return false;
+        }
+        if (!(type.create(level) instanceof Mob mob)) {
             return false;
         }
         mob.moveTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, level.random.nextFloat() * 360.0F, 0.0F);
-        mob.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.EVENT, null, null);
+        if (!ForgeEventFactory.checkSpawnPosition(mob, level, MobSpawnType.NATURAL)) {
+            return false;
+        }
+        mob.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.NATURAL, null, null);
         return level.addFreshEntity(mob);
     }
 

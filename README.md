@@ -36,7 +36,7 @@ When a player dies in Subaru Mode, the world is restored to the latest valid che
 - Passive trigger: below 3 hearts with at least 4 enemies within 20 blocks, it automatically consumes 20% Spirit and activates.
 - Active and passive share a 5-minute cooldown; Death Return or sleeping resets it.
 - Witch's Scent now decays over time and is not increased by Unseen Hand.
-- Above 30% Witch's Scent, nearby mob spawning increases and forbidden chat phrases trigger a staged Witch curse that smoothly drains the health bar to zero over about 2 seconds.
+- Above 30% Witch's Scent, nearby mob spawning increases using the local biome spawn table and forbidden chat phrases trigger a staged Witch curse that smoothly drains the health bar to zero over about 2 seconds.
 - Sleeping restores Spirit. Post-return aura effect remains around the player for 5 minutes.
 
 ## Commands

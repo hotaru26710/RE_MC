@@ -32,7 +32,7 @@ When a player dies in Subaru Mode, the world is restored to the latest valid che
 - Low Spirit gradually desaturates and dims the world, stopping at near-monochrome rather than full black and white.
 - At lower Spirit levels, random exposed block faces briefly show corrupted block textures; they now expire naturally and no longer require interaction to clear.
 - Adds Spirit Herb, Witch's Tea, and Gospel. The Unseen Hand is no longer an item.
-- Unseen Hand defaults to the V key. Active use locks every hostile within 20 blocks, sends one hand from the player toward each enemy through obstacles, repeatedly punches them with Knockback IV force, and costs 10% Spirit. Each hand lasts until its enemy dies or 10 seconds pass.
+- Unseen Hand defaults to the V key. Active use locks every hostile within 20 blocks, sends layered black smoke arms with palms, fingers, purple glow, and dark red cores from the player and body shadow toward each enemy through obstacles, repeatedly punching them with Knockback IV force, and costs 10% Spirit. Each hand lasts until its enemy dies or 10 seconds pass.
 - Passive trigger: below 3 hearts with at least 4 enemies within 20 blocks, it automatically consumes 20% Spirit and activates.
 - Active and passive share a 5-minute cooldown; Death Return or sleeping resets it.
 - Witch's Scent now decays over time and is not increased by Unseen Hand.

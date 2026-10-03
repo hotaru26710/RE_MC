@@ -86,7 +86,7 @@ RE_MC は、『Re:Zero から始める異世界生活』にインスパイアさ
 出力:
 
 ```text
-build/libs/re_mc-1.2.0.jar
+build/libs/re_mc-1.3.0.jar
 ```
 
 ## 開発メモ

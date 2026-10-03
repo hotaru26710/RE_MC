@@ -86,7 +86,7 @@ Important options include:
 Output:
 
 ```text
-build/libs/re_mc-1.2.0.jar
+build/libs/re_mc-1.3.0.jar
 ```
 
 ## Development Notes

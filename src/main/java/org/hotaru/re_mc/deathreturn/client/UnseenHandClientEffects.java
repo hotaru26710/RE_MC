@@ -154,7 +154,8 @@ public final class UnseenHandClientEffects {
         double elapsed = Math.max(0L, Util.getMillis() - visualStartMillis);
         double reach = Math.min(1.0D, elapsed / 220.0D);
         reach = reach * (2.0D - reach);
-        Vec3 handEnd = lerp(start, end, reach);
+        double punch = punchStrength(elapsed);
+        Vec3 handEnd = reach < 1.0D ? lerp(start, end, reach) : end.subtract(direction.scale(1.25D * (1.0D - punch)));
         Vec3 side = direction.cross(new Vec3(0.0D, 1.0D, 0.0D));
         if (side.lengthSqr() < 1.0E-4D) {
             side = new Vec3(1.0D, 0.0D, 0.0D);
@@ -180,8 +181,10 @@ public final class UnseenHandClientEffects {
         }
 
         Vec3 palm = handEnd.subtract(direction.scale(0.18D * reach));
-        drawRing(poseStack, consumer, palm, side, up, 0.52D, coreColor, 18, phase);
-        drawRing(poseStack, consumer, palm, side, up, 0.34D, edgeColor, 12, phase + 1.6D);
+        if (punch > 0.55D) {
+            drawRing(poseStack, consumer, palm, side, up, 0.52D, coreColor, 18, phase);
+            drawRing(poseStack, consumer, palm, side, up, 0.34D, edgeColor, 12, phase + 1.6D);
+        }
         for (int finger = 0; finger < 5; finger++) {
             double offset = (finger - 2) * 0.13D;
             double spread = (finger - 2) * 0.16D;
@@ -206,6 +209,20 @@ public final class UnseenHandClientEffects {
     private static Vec3 ringPoint(Vec3 center, Vec3 side, Vec3 up, double radius, double t, double phase) {
         double angle = t * Math.PI * 2.0D + phase;
         return center.add(side.scale(Math.cos(angle) * radius)).add(up.scale(Math.sin(angle) * radius * 0.72D));
+    }
+
+    private static double punchStrength(double elapsedMillis) {
+        if (elapsedMillis < 220.0D) {
+            return 0.0D;
+        }
+        double phase = ((elapsedMillis - 220.0D) % 500.0D) / 500.0D;
+        if (phase < 0.35D) {
+            double t = phase / 0.35D;
+            return t * t * (3.0D - 2.0D * t);
+        }
+        double t = (phase - 0.35D) / 0.65D;
+        double eased = t * t * (3.0D - 2.0D * t);
+        return 1.0D - eased;
     }
 
     private static Vec3 lerp(Vec3 from, Vec3 to, double t) {

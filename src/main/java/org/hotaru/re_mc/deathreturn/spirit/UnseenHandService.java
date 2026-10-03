@@ -40,8 +40,9 @@ public final class UnseenHandService {
     public static final float PASSIVE_SPIRIT_COST = 20.0F;
     public static final float PASSIVE_HEALTH_THRESHOLD = 6.0F;
     public static final int PASSIVE_ENEMY_THRESHOLD = 4;
-    private static final int DAMAGE_INTERVAL_TICKS = 10;
+    private static final int PUNCH_INTERVAL_TICKS = 10;
     private static final float ATTACK_DAMAGE = 3.0F;
+    private static final double KNOCKBACK_IV_STRENGTH = 2.15D;
     private static final List<HandAttack> ATTACKS = new ArrayList<>();
 
     private UnseenHandService() {
@@ -109,7 +110,7 @@ public final class UnseenHandService {
 
         List<Integer> targetIds = targets.stream().map(Entity::getId).toList();
         ATTACKS.removeIf(attack -> attack.casterId.equals(player.getUUID()));
-        ATTACKS.add(new HandAttack(player.getUUID(), targetIds, player.serverLevel().dimension(), gameTime + DURATION_TICKS));
+        ATTACKS.add(new HandAttack(player.getUUID(), targetIds, player.serverLevel().dimension(), gameTime, gameTime + DURATION_TICKS));
 
         ReturnNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new UnseenHandVisualPacket(targetIds, DURATION_TICKS));
         ServerLevel level = player.serverLevel();
@@ -133,37 +134,43 @@ public final class UnseenHandService {
                 iterator.remove();
                 continue;
             }
-            boolean damageTick = gameTime % DAMAGE_INTERVAL_TICKS == 0;
+            long attackTick = gameTime - attack.startGameTime;
+            boolean punchTick = attackTick > 0L && attackTick % PUNCH_INTERVAL_TICKS == 0L;
             for (int entityId : attack.targetIds) {
                 Entity entity = level.getEntity(entityId);
                 if (!(entity instanceof LivingEntity target) || !target.isAlive() || target.isSpectator()) {
                     continue;
                 }
-                applyKnockback(caster, target, damageTick ? 0.85D : 0.18D);
-                if (damageTick) {
-                    applyDamage(caster, target);
+                if (punchTick) {
+                    applyPunch(caster, target);
+                    renderPunchParticles(level, caster, target);
+                } else if (gameTime % 2 == 0) {
+                    renderTrailParticles(level, caster, target);
                 }
-                renderParticles(level, caster, target);
             }
         }
     }
 
-    private static void applyKnockback(ServerPlayer caster, LivingEntity target, double strength) {
+    private static void applyPunch(ServerPlayer caster, LivingEntity target) {
         Vec3 push = target.position().subtract(caster.position());
         if (push.lengthSqr() < 1.0E-4D) {
             push = caster.getLookAngle();
         }
-        push = push.normalize().scale(strength).add(0.0D, 0.18D + strength * 0.22D, 0.0D);
+        push = push.normalize().scale(KNOCKBACK_IV_STRENGTH).add(0.0D, 0.62D, 0.0D);
         target.setDeltaMovement(target.getDeltaMovement().add(push));
         target.hurtMarked = true;
-    }
-
-    private static void applyDamage(ServerPlayer caster, LivingEntity target) {
         target.invulnerableTime = 0;
         target.hurt(caster.damageSources().playerAttack(caster), ATTACK_DAMAGE);
     }
 
-    private static void renderParticles(ServerLevel level, ServerPlayer caster, LivingEntity target) {
+    private static void renderPunchParticles(ServerLevel level, ServerPlayer caster, LivingEntity target) {
+        renderTrailParticles(level, caster, target);
+        Vec3 impact = target.position().add(0.0D, target.getBbHeight() * 0.55D, 0.0D);
+        level.sendParticles(caster, ParticleTypes.SOUL_FIRE_FLAME, false, impact.x, impact.y, impact.z, 6, 0.24D, 0.28D, 0.24D, 0.025D);
+        level.sendParticles(caster, ParticleTypes.END_ROD, false, impact.x, impact.y, impact.z, 4, 0.18D, 0.20D, 0.18D, 0.01D);
+    }
+
+    private static void renderTrailParticles(ServerLevel level, ServerPlayer caster, LivingEntity target) {
         Vec3 start = caster.getEyePosition().add(0.0D, -0.25D, 0.0D);
         Vec3 end = target.position().add(0.0D, target.getBbHeight() * 0.55D, 0.0D);
         for (int i = 0; i < 5; i++) {
@@ -173,8 +180,6 @@ public final class UnseenHandService {
             double z = start.z + (end.z - start.z) * t;
             level.sendParticles(caster, ParticleTypes.SCULK_SOUL, false, x, y, z, 1, 0.02D, 0.02D, 0.02D, 0.0D);
         }
-        level.sendParticles(caster, ParticleTypes.SOUL_FIRE_FLAME, false, end.x, end.y, end.z, 3, 0.18D, 0.22D, 0.18D, 0.01D);
-        level.sendParticles(caster, ParticleTypes.END_ROD, false, end.x, end.y, end.z, 2, 0.12D, 0.18D, 0.12D, 0.005D);
     }
 
     public static List<LivingEntity> findEnemies(ServerPlayer player) {
@@ -245,12 +250,14 @@ public final class UnseenHandService {
         private final UUID casterId;
         private final List<Integer> targetIds;
         private final net.minecraft.resources.ResourceKey<net.minecraft.world.level.Level> dimension;
+        private final long startGameTime;
         private final long endGameTime;
 
-        private HandAttack(UUID casterId, List<Integer> targetIds, net.minecraft.resources.ResourceKey<net.minecraft.world.level.Level> dimension, long endGameTime) {
+        private HandAttack(UUID casterId, List<Integer> targetIds, net.minecraft.resources.ResourceKey<net.minecraft.world.level.Level> dimension, long startGameTime, long endGameTime) {
             this.casterId = casterId;
             this.targetIds = List.copyOf(targetIds);
             this.dimension = dimension;
+            this.startGameTime = startGameTime;
             this.endGameTime = endGameTime;
         }
     }

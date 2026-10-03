@@ -106,6 +106,11 @@ public final class WorldReloadService {
             if (level == null) {
                 continue;
             }
+            if (level.dimension() == Level.END && level.getDragonFight() != null) {
+                for (ServerPlayer player : List.copyOf(level.players())) {
+                    level.getDragonFight().removePlayer(player);
+                }
+            }
             level.noSave = true;
             MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.level.LevelEvent.Unload(level));
             level.close();

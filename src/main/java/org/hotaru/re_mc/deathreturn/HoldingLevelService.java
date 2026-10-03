@@ -110,9 +110,17 @@ public final class HoldingLevelService {
         return holdingLevel;
     }
 
+    private static void clearEndBossBar(ServerPlayer player, ServerLevel oldLevel) {
+        if (oldLevel.dimension() != Level.END || oldLevel.getDragonFight() == null) {
+            return;
+        }
+        oldLevel.getDragonFight().removePlayer(player);
+    }
+
     private void moveToHolding(ServerPlayer player, ServerLevel target) {
         ServerLevel oldLevel = player.serverLevel();
         LevelData levelData = target.getLevelData();
+        clearEndBossBar(player, oldLevel);
         player.connection.send(new ClientboundRespawnPacket(
                 target.dimensionTypeId(),
                 target.dimension(),

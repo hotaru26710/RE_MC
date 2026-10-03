@@ -27,6 +27,7 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = Re_mc.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public final class UnseenHandClientEffects {
     private static final List<Integer> TARGET_IDS = new ArrayList<>();
+    private static long visualStartMillis;
     private static long visualUntilMillis;
     private static int cooldownTicks;
     private static boolean cooldownEnabled;
@@ -37,7 +38,8 @@ public final class UnseenHandClientEffects {
     public static void show(List<Integer> entityIds, int durationTicks) {
         TARGET_IDS.clear();
         TARGET_IDS.addAll(entityIds);
-        visualUntilMillis = Util.getMillis() + Math.max(0, durationTicks) * 50L;
+        visualStartMillis = Util.getMillis();
+        visualUntilMillis = visualStartMillis + Math.max(0, durationTicks) * 50L;
     }
 
     public static void setCooldown(int remainingTicks, boolean enabled) {
@@ -47,6 +49,7 @@ public final class UnseenHandClientEffects {
 
     public static void clear() {
         TARGET_IDS.clear();
+        visualStartMillis = 0L;
         visualUntilMillis = 0L;
         cooldownTicks = 0;
         cooldownEnabled = false;
@@ -148,6 +151,10 @@ public final class UnseenHandClientEffects {
             direction = caster.getLookAngle();
         }
         direction = direction.normalize();
+        double elapsed = Math.max(0L, Util.getMillis() - visualStartMillis);
+        double reach = Math.min(1.0D, elapsed / 220.0D);
+        reach = reach * (2.0D - reach);
+        Vec3 handEnd = lerp(start, end, reach);
         Vec3 side = direction.cross(new Vec3(0.0D, 1.0D, 0.0D));
         if (side.lengthSqr() < 1.0E-4D) {
             side = new Vec3(1.0D, 0.0D, 0.0D);
@@ -165,14 +172,14 @@ public final class UnseenHandClientEffects {
             double t = segment / 9.0D;
             double wave = Math.sin(phase + t * Math.PI * 4.0D) * 0.22D;
             double twist = Math.cos(phase * 1.3D + t * Math.PI * 3.0D) * 0.18D;
-            Vec3 point = lerp(start, end, t).add(side.scale(wave)).add(up.scale(twist));
+            Vec3 point = lerp(start, handEnd, t).add(side.scale(wave * reach)).add(up.scale(twist * reach));
             drawLine(poseStack, consumer, previous, point, coreColor);
             drawLine(poseStack, consumer, previous.add(side.scale(0.035D)), point.add(side.scale(0.035D)), edgeColor);
             drawLine(poseStack, consumer, previous.add(side.scale(-0.035D)), point.add(side.scale(-0.035D)), shadowColor);
             previous = point;
         }
 
-        Vec3 palm = end.subtract(direction.scale(0.18D));
+        Vec3 palm = handEnd.subtract(direction.scale(0.18D * reach));
         drawRing(poseStack, consumer, palm, side, up, 0.52D, coreColor, 18, phase);
         drawRing(poseStack, consumer, palm, side, up, 0.34D, edgeColor, 12, phase + 1.6D);
         for (int finger = 0; finger < 5; finger++) {

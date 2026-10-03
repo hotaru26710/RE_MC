@@ -29,13 +29,12 @@ import org.hotaru.re_mc.deathreturn.network.UnseenHandVisualPacket;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = Re_mc.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class UnseenHandService {
-    public static final double RANGE = 10.0D;
-    public static final int DURATION_TICKS = 100;
+    public static final double RANGE = 20.0D;
+    public static final int DURATION_TICKS = 200;
     public static final int COOLDOWN_TICKS = 20 * 60 * 5;
     public static final float ACTIVE_SPIRIT_COST = 10.0F;
     public static final float PASSIVE_SPIRIT_COST = 20.0F;
@@ -140,22 +139,26 @@ public final class UnseenHandService {
                 if (!(entity instanceof LivingEntity target) || !target.isAlive() || target.isSpectator()) {
                     continue;
                 }
+                applyKnockback(caster, target, damageTick ? 0.85D : 0.18D);
                 if (damageTick) {
-                    applyHit(caster, target);
+                    applyDamage(caster, target);
                 }
                 renderParticles(level, caster, target);
             }
         }
     }
 
-    private static void applyHit(ServerPlayer caster, LivingEntity target) {
+    private static void applyKnockback(ServerPlayer caster, LivingEntity target, double strength) {
         Vec3 push = target.position().subtract(caster.position());
         if (push.lengthSqr() < 1.0E-4D) {
             push = caster.getLookAngle();
         }
-        push = push.normalize().scale(1.05D).add(0.0D, 0.42D, 0.0D);
+        push = push.normalize().scale(strength).add(0.0D, 0.18D + strength * 0.22D, 0.0D);
         target.setDeltaMovement(target.getDeltaMovement().add(push));
         target.hurtMarked = true;
+    }
+
+    private static void applyDamage(ServerPlayer caster, LivingEntity target) {
         target.invulnerableTime = 0;
         target.hurt(caster.damageSources().playerAttack(caster), ATTACK_DAMAGE);
     }

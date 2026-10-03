@@ -3,9 +3,11 @@ package org.hotaru.re_mc.deathreturn.client;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGuiEvent;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -52,12 +54,26 @@ public final class CombinedStatusHud {
     @SubscribeEvent
     public static void onRenderGui(RenderGuiEvent.Post event) {
         Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.screen instanceof ChatScreen) {
+            return;
+        }
+        renderPanel(event.getGuiGraphics());
+    }
+
+    @SubscribeEvent
+    public static void onScreenRender(ScreenEvent.Render.Post event) {
+        if (event.getScreen() instanceof ChatScreen) {
+            renderPanel(event.getGuiGraphics());
+        }
+    }
+
+    private static void renderPanel(GuiGraphics graphics) {
+        Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
         if (!SpiritHudOverlay.isVisible() || player == null || player.isCreative() || player.isSpectator() || minecraft.screen instanceof ReturnTransitionScreen) {
             return;
         }
 
-        GuiGraphics graphics = event.getGuiGraphics();
         int width = graphics.guiWidth();
         int height = graphics.guiHeight();
         int right = width / 2 + 91;

@@ -10,7 +10,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -156,6 +155,14 @@ public final class UnseenHandClientEffects {
         event.setRoll(event.getRoll() + (float) (wave * 0.10D * punch));
     }
 
+    public static int cooldownTicks() {
+        return cooldownTicks;
+    }
+
+    public static boolean cooldownEnabled() {
+        return cooldownEnabled;
+    }
+
     @SubscribeEvent
     public static void onRenderGui(RenderGuiEvent.Post event) {
         Minecraft minecraft = Minecraft.getInstance();
@@ -164,32 +171,6 @@ public final class UnseenHandClientEffects {
             return;
         }
         renderImpactPulse(event.getGuiGraphics());
-        if (!cooldownEnabled) {
-            return;
-        }
-        GuiGraphics graphics = event.getGuiGraphics();
-        int width = graphics.guiWidth();
-        int height = graphics.guiHeight();
-        int x = width / 2 - 91;
-        int y = height - 50 - (player.getArmorValue() > 0 ? 10 : 0) - 20;
-        int barWidth = 82;
-        int barHeight = 4;
-        boolean ready = cooldownTicks <= 0;
-        graphics.fill(x - 1, y - 1, x + barWidth + 1, y + barHeight + 1, 0xCC06030B);
-        graphics.fill(x, y, x + barWidth, y + barHeight, 0xFF22152F);
-        if (ready) {
-            graphics.fill(x, y, x + barWidth, y + barHeight, 0xFF5AF2FF);
-            graphics.fill(x, y, x + barWidth, y + 1, 0xFFE8FFFF);
-        } else {
-            float progress = 1.0F - Math.min(1.0F, cooldownTicks / (20.0F * 60.0F * 5.0F));
-            int filled = Math.round(barWidth * progress);
-            graphics.fill(x, y, x + filled, y + barHeight, 0xFF9A4DFF);
-            graphics.fill(x, y, x + Math.max(1, filled), y + 1, 0xFFE0B7FF);
-        }
-        Component label = ready
-                ? Component.translatable("hud.re_mc.unseen_hand.ready")
-                : Component.translatable("hud.re_mc.unseen_hand.cooldown", formatCooldown(cooldownTicks));
-        graphics.drawString(minecraft.font, label, x + barWidth + 5, y - 3, ready ? 0xFF8FFBFF : 0xFFD8B4FF, true);
     }
 
     private static void renderImpactPulse(GuiGraphics graphics) {
@@ -453,10 +434,6 @@ public final class UnseenHandClientEffects {
         return (Math.max(0, Math.min(255, a)) << 24) | (Math.max(0, Math.min(255, r)) << 16) | (Math.max(0, Math.min(255, g)) << 8) | Math.max(0, Math.min(255, b));
     }
 
-    private static String formatCooldown(int ticks) {
-        int totalSeconds = Math.max(0, ticks / 20);
-        return String.format("%d:%02d", totalSeconds / 60, totalSeconds % 60);
-    }
 
     private record UvRect(double u0, double v0, double u1, double v1) {
     }

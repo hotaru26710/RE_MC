@@ -27,7 +27,7 @@ public final class WitchCurseOverlay {
     @SubscribeEvent
     public static void onRenderGui(RenderGuiEvent.Post event) {
         if (active) {
-            ReturnTransitionScreen.renderWitchAura(event.getGuiGraphics(), darkness, 0.0F);
+            ReturnTransitionScreen.renderWitchAura(event.getGuiGraphics(), darkness, 0.0F, 1.0F);
         }
     }
 }

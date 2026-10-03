@@ -25,7 +25,7 @@ When a player dies in Subaru Mode, the world is restored to the latest valid che
 - Full world snapshot/rollback pipeline for the current implementation.
 - Death log and return counter per player.
 - Random Death Return sound playback after successful return.
-- Client-side Return transition with black-out and purple Witch aura effects.
+- Client-side Return presentation with heartbeat blackout, silent pause, foot-level burst reveal, subtle camera impact, and layered Witch aura.
 - Spirit HUD above the health bar with animated ten-segment display.
 - Death Return reduces Spirit by 5%-30% depending on the death cause.
 - Spirit recovers by 1% per minute while online and applies tiered debuffs at low values.

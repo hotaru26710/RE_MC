@@ -25,6 +25,7 @@ import org.hotaru.re_mc.deathreturn.memory.PlayerMemory;
 import org.hotaru.re_mc.deathreturn.memory.ReturnMemoryService;
 import org.hotaru.re_mc.deathreturn.network.ReturnNetwork;
 import org.hotaru.re_mc.deathreturn.network.ReturnTransitionPacket;
+import org.hotaru.re_mc.deathreturn.network.ReturnTransitionPhase;
 import org.hotaru.re_mc.deathreturn.mode.SubaruModeManager;
 import org.hotaru.re_mc.deathreturn.mode.SubaruModePending;
 import org.hotaru.re_mc.deathreturn.spirit.SpiritRules;
@@ -271,8 +272,11 @@ public final class ReturnManager {
                 SpiritService.applyReturnLoss(triggerPlayer, pendingSpiritLoss);
                 UnseenHandService.resetCooldown(triggerPlayer);
                 beginPostReturnReveal(triggerPlayer);
+                beginReturnAura(triggerPlayer);
                 SpiritService.sync(triggerPlayer);
-                playReturnSound(triggerPlayer);
+                if (ReturnConfig.SHOW_TRANSITION.get()) {
+                    playReturnSound(triggerPlayer);
+                }
                 auraUntil.put(triggerPlayer.getUUID(), System.currentTimeMillis() + minutes(5));
             }
             state = ReturnState.IDLE;
@@ -401,18 +405,28 @@ public final class ReturnManager {
         if (!ReturnConfig.SHOW_TRANSITION.get()) {
             return;
         }
-        ReturnNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new ReturnTransitionPacket(20 * 120, false));
+        ReturnNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new ReturnTransitionPacket(ReturnTransitionPhase.BLACKOUT, 20 * 120, 1.0F));
     }
 
     private void beginPostReturnReveal(ServerPlayer player) {
-        ReturnNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new ReturnTransitionPacket(15, true));
+        if (!ReturnConfig.SHOW_TRANSITION.get()) {
+            return;
+        }
+        ReturnNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new ReturnTransitionPacket(ReturnTransitionPhase.REVEAL, 20 * 4 + 5, 1.0F));
+    }
+
+    private void beginReturnAura(ServerPlayer player) {
+        if (!ReturnConfig.SHOW_TRANSITION.get()) {
+            return;
+        }
+        ReturnNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new ReturnTransitionPacket(ReturnTransitionPhase.AURA, 20 * 300, 1.0F));
     }
 
     private void stopTransition(ServerPlayer player) {
         if (player == null || player.connection == null) {
             return;
         }
-        ReturnNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new ReturnTransitionPacket(0, false));
+        ReturnNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new ReturnTransitionPacket(ReturnTransitionPhase.STOP, 0, 0.0F));
     }
 
     private void tickAura() {
